@@ -24,7 +24,7 @@ const services = {
 
 services.getUserByUid = function(uid) {
     const dbUser = dbUsersRef.child(uid);
-    return dbUser.once('value');
+    return dbUser.once('value').then( snapshot => snapshot.val() );
 };
 
 services.createUserObj = function() {
@@ -59,10 +59,20 @@ services.getFlakey = function(flakeyId) {
             .then( (snapshot) => snapshot.val());
 };
 
-services.getFlakeys = function(flakeyIdArray) {
-    const promises = flakeyIdArray.map( (flakeyid) => {
-        return services.getFlakey(flakeyid);
-    });
+//accepts flakeyIds as Array or as Object {flakeyid: true, ...}
+services.getFlakeys = function(flakeyIds) {
+    let promises = [];
+
+    if ( Array.isArray(flakeyIds) ) { //if Array
+        promises = flakeyIds.map( (flakeyId) => {
+            return services.getFlakey(flakeyId);
+        });
+
+    } else { //if plain Object of form {flakeyid: true, ...}
+        for (let flakeyId in flakeyIds) {
+            promises.push( services.getFlakey(flakeyId) );
+        }
+    }
 
     return Promise.all(promises);
 };
@@ -72,7 +82,7 @@ services.createFlakeyObj = function() {
         owner: '',
         title: '',
         event: '',
-        dateExpire: 0,
+        dateExpires: 0,
         dateCreated: 0,
         amount: 0,
         members: {},

@@ -1,9 +1,10 @@
 import React from 'react';
 
 const LoggedInUserIndicator = function(props) {
-    const {classEnvelope} = props.classes; 
+    const {userName} = props;
+    // const {classEnvelope} = props.classes; 
     return (
-        <div className={classEnvelope}>LoggedInUserIndicator needs work.</div>
+        <div>Welcome, {userName}!</div>
     );
 }
 
