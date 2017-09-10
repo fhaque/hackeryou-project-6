@@ -74,21 +74,28 @@ class App extends React.Component {
 
         // services.getFlakeys(['-Ktcn3BsQrNOu06AXUoJ', '-Ktcn3BsQrNO'] ).then( val => console.log(val) );
 
-//         services.saveNewFlakey({
-//     owner: 'Bob',
-//     title: 'Better show',
-//     event: 'Concert',
-//     amount: 10.50,
-//     members: ['blah','gwah'],
-//     flakedMembers: ['basdf'],
-//     key: '',
-//     expired: false,
-//     deleted: false,
-//     complete: false,
-//     description: 'This should be good.',
-// });
+        services.saveNewFlakey({
+    owner: 'Bob',
+    title: 'Better show',
+    event: 'Concert',
+    amount: 10.50,
+    members: {
+        'bill': true,
+        'cat': true
+    },
+    flakedMembers: {
+        'basdf': true,
+    },
+    id: '',
+    expired: false,
+    deleted: false,
+    complete: false,
+    description: 'This should be good.',
+}).then( val => console.log(val));
 
+        // console.log(firebase.auth().currentUser);
 
+        // services.userCommitToFlakey('kiki', '-Ktcn3BsQrNOu06AXUoJ');
     }
 
     render() {

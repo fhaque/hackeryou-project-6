@@ -27,6 +27,32 @@ services.getUserByUid = function(uid) {
     return dbUser.once('value');
 };
 
+services.createUserObj = function() {
+    return {
+        name: '',
+        email: '',
+        flakeyIds: [''],
+        uid: '',
+    }
+}
+
+services.saveNewUser = function(uid, userObj) {
+    services.validateAndCorrectUser(uid, userObj);
+
+    return dbUsersRef.child(userObj.uid).set(userObj)
+        .then( val => true )
+        .catch( err => {
+            console.log('Services: failed to save User');
+            return err;
+        });
+};
+
+services.validateAndCorrectUser = function(uid, userObj) {
+    if (userObj.uid !== uid) {
+        userObj.uid = uid;
+    }
+}
+
 services.getFlakey = function(flakeyId) {
     const dbFlakey = dbFlakeysRef.child(flakeyId);
     return dbFlakey.once('value')
@@ -46,10 +72,12 @@ services.createFlakeyObj = function() {
         owner: '',
         title: '',
         event: '',
+        dateExpire: 0,
+        dateCreated: 0,
         amount: 0,
-        members: [''],
-        flakedMembers: [''],
-        key: '',
+        members: {},
+        flakedMembers: {},
+        id: '',
         expired: false,
         deleted: false,
         complete: false,
@@ -68,7 +96,7 @@ services.saveNewFlakey = function(flakeyObj) {
     services.validateAndCorrectFlakey(flakeyObj);
 
     return dbFlakeysRef.update(updates)
-        .then( val => true )
+        .then( () => key )
         .catch( err => {
             console.log('Services: failed to save Flakey');
             return err;
@@ -77,16 +105,48 @@ services.saveNewFlakey = function(flakeyObj) {
 
 services.validateAndCorrectFlakey = function(flakeyObj) {
     //validate that owner is a member
-    if ( !flakeyObj.members.includes( flakeyObj.owner ) ) {
-        flakeyObj.members.push( flakeyObj.owner );
+    if ( flakeyObj.owner in flakeyObj.members ) {
+        flakeyObj.members[flakeyObj.owner] = true;
     }
 
     //validate that if flakey is not expired, flakedMembers is empty
     if ( !flakeyObj.expired ) {
-        flakeyObj.flakedMembers = [''];
+        flakeyObj.flakedMembers = {};
     }
-} 
+
+    //validate that Flakey is not complete before expiring
+    if (!flakeyObj.expired && flakeyObj.complete) {
+        return false;
+    }
+
+    //TODO: validate no duplicates in members and flakedMembers
+    //best solution is to create a Set
+
+    //validate flakedMembers exist in members. If it doesn't, delete it.
+    for (let flakedMember in flakeyObj.flakedMembers) {
+        if ( !(flakedMember in flakeyObj.members) ) {
+            delete flakeyObj.flakedMembers[flakedMember];
+        }
+    }
+
+}
+
+services.userCommitToFlakey = function(uid, flakeyid) {
+    return dbFlakeysRef.child(`${flakeyid}/members/${uid}`).set(true)
+        .then( () => true )
+        .catch( err => {
+            console.log('Services: failed to save Flakey');
+            return err;
+        });
+}
 
 
+// function removeDuplicates(array) {
+//     return [...new Set(array)];
+// }
+
+function ObjectIsEmpty(flakedMembers) {
+    return Object.keys(obj).length === 0 && obj.constructor === Object;
+}
 
 export default services;
