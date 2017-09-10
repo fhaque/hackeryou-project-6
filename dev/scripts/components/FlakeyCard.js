@@ -3,8 +3,8 @@ import React from 'react';
 const FlakeyCard = function(props) {
     // const {classEnvelope} = props.classes; 
     const {title, event, amount, dateCreated, dateExpires, owner, members} = props;
-
-    const {expand} = props; 
+    
+    const {expand, onlyCanCommit} = props; 
 
     return (
         <div className="FlakeyCard">
@@ -23,6 +23,7 @@ const FlakeyCard = function(props) {
                     );
                 })}
             </ul>}
+            {onlyCanCommit && <button>Commit to Flakey</button>}
         </div>
     );
 }

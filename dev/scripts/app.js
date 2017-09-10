@@ -5,15 +5,16 @@ import  {
             Route, 
             Link 
         }                               from 'react-router-dom';
-import moment from 'moment';
+import      moment                      from 'moment';
 
-import firebase from './firebase';
-import services from './services';
+import      firebase                    from './firebase';
+import      services                    from './services';
 
-import Header from './components/Header';
-import FlakeyCard from './components/FlakeyCard';
-import FlakeysView from './FlakeysView';
-import CreateFlakeyView from './CreateFlakeyView.js';
+import      Header                      from './components/Header';
+import      FlakeyCard                  from './components/FlakeyCard';
+import      FlakeysView                 from './FlakeysView';
+import      CreateFlakeyView            from './CreateFlakeyView';
+import      EditFlakeyView              from './EditFlakeyView';
 
 const dbUsersRef = firebase.database().ref('users/');
 const dbFlakeysRef = firebase.database().ref('flakeys/');
@@ -124,23 +125,52 @@ class App extends React.Component {
                 date: moment().format('YYYY-MM-DD'),
                 time: moment().format('HH:mm'),
                 amount: 0.00,
+                description: '',
             },
+            editFlakeyVals: {},
+            currentFlakey: {},
         };
 
 
         this.handleCreateFlakeyCancel = this.handleCreateFlakeyCancel.bind(this);
         this.handleCreateFlakeySubmit = this.handleCreateFlakeySubmit.bind(this);
         this.handleCreateFlakeyChange = this.handleCreateFlakeyChange.bind(this);
+
+        this.handleEditFlakeyCancel = this.handleEditFlakeyCancel.bind(this);
+        this.handleEditFlakeyChange = this.handleCreateFlakeyChange.bind(this);
+        this.handleEditFlakeyDelete = this.handleEditFlakeyDelete.bind(this);
+        this.handleEditFlakeySubmit = this.handleEditFlakeySubmit.bind(this);
+
+        this.handleFlakeyCommit = this.handleFlakeyCommit.bind(this);
+    }
+
+    handleFlakeyCommit(e) {
+        e.preventDefault();
+        console.log('Flakey commit pressed. Need to complete.');
     }
 
     handleCreateFlakeyCancel(e) {
         e.preventDefault();
-        console.log('Create Flakey Cancelled.');
+        console.log('Create Flakey Cancelled. Need to complete');
     }
 
     handleCreateFlakeySubmit(e) {
         e.preventDefault();
         console.log('Create Flakey Submitted.', this.state.createFlakeyVals);
+
+        const flakeyVals = Object.assign({}, this.state.createFlakeyVals);
+        
+        //set expiration date
+        flakeyVals.dateExpires = moment(this.state.createFlakeyVals.date + 'T' + this.state.createFlakeyVals.time).valueOf();
+
+        //set creation date
+        flakeyVals.dateCreated = moment().valueOf();
+
+        //set owner
+        flakeyVals.owner = this.state.user.uid;
+
+        //TODO: Need to wire up
+        console.log(services.createFlakeyObj(flakeyVals));
     }
 
     handleCreateFlakeyChange(e) {
@@ -151,6 +181,46 @@ class App extends React.Component {
 
         this.setState({ createFlakeyVals });
 
+    }
+
+    handleEditFlakeySubmit(e) {
+        e.preventDefault();
+        const flakeyVals = Object.assign({}, this.state.editFlakeyVals);
+        const currentFlakey = Object.assign({}, this.state.currentFlakey);
+
+        //remove any unecessary keys
+        for (let key in flakeyVals) {
+            if ( !(key in currentFlakey) ) {
+                delete flakeyVals[key];
+            }
+        }
+
+        Object.assign(currentFlakey, flakeyVals);
+
+        this.setState({ currentFlakey });
+
+        //TODO: watch for changes
+        services.updateFlakey(currentFlakey);
+    } 
+
+    handleEditFlakeyChange(e) {
+        e.preventDefault();
+
+        const editFlakeyVals = this.state.editFlakeyVals;
+
+        editFlakeyVals[e.target.name] = e.target.value;
+
+        this.setState({ editFlakeyVals });
+    }
+
+    handleEditFlakeyCancel(e) {
+        e.preventDefault();
+        console.log('Create Flakey Cancelled.');
+    }
+
+    handleEditFlakeyDelete(e) {
+        e.preventDefault();
+        services.deleteFlakey(currentFlakey.id);
     }
 
     componentDidMount() {
@@ -214,8 +284,16 @@ class App extends React.Component {
             <div>
                 <Header userName={this.state.user.name} {...this.header} />
                 {/*<FlakeysView user={this.state.user} flakeys={this.state.flakeys} />*/}
-                <CreateFlakeyView   handleSubmit={this.handleCreateFlakeySubmit}
-                                    handleCancel={this.handleCreateFlakeyCancel}handleChange={this.handleCreateFlakeyChange}formVals={this.state.createFlakeyVals}/>
+                {/*<CreateFlakeyView   handleSubmit={this.handleCreateFlakeySubmit}
+                                    handleCancel={this.handleCreateFlakeyCancel}handleChange={this.handleCreateFlakeyChange}formVals={this.state.createFlakeyVals}/>*/}
+                {/*<EditFlakeyView handleSubmit={this.handleEditFlakeySubmit}
+                                handleCancel={this.handleEditFlakeyCancel}handleChange={this.handleEditFlakeyChange}
+                                handleDelete={this.handleEditFlakeyDelete}formVals={this.state.editFlakeyVals}/>*/}
+
+                <FlakeyCard expand={true} 
+                            //only allow committing if not owner.
+                            handleCommit={this.handleFlakeyCommit}
+                            onlyCanCommit={false} {...this.state.flakeys[0]} />
 
             </div>
         )

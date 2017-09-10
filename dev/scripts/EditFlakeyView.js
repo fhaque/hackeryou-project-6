@@ -2,11 +2,11 @@ import      React                       from 'react';
 import      ReactDOM                    from 'react-dom';
 import      FlakeyEditForm              from './components/FlakeyEditForm';
 
-class CreateFlakeyView extends React.Component {
+class EditFlakeyView extends React.Component {
     render() {
         return (
             <div>
-                <FlakeyEditForm newEntry={true} 
+                <FlakeyEditForm newEntry={false} 
                                 handleSubmit={this.props.handleSubmit} handleCancel={this.props.handleCancel}
                                 handleChange={this.props.handleChange}
                                 formVals={this.props.formVals}/>
@@ -15,4 +15,4 @@ class CreateFlakeyView extends React.Component {
     }
 }
 
-export default CreateFlakeyView;
+export default EditFlakeyView;

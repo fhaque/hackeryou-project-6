@@ -77,8 +77,10 @@ services.getFlakeys = function(flakeyIds) {
     return Promise.all(promises);
 };
 
-services.createFlakeyObj = function() {
-    return {
+services.createFlakeyObj = function(flakeyVals) {
+    const newVals = Object.assign({}, flakeyVals);
+
+    const newFlakeyObj = {
         owner: '',
         title: '',
         event: '',
@@ -93,6 +95,18 @@ services.createFlakeyObj = function() {
         complete: false,
         description: '',
     };
+
+    //remove non-valid properties from function argument
+    for (let key in newVals) {
+        if ( !(key in newFlakeyObj) ) {
+            delete newVals[key];
+        }
+    }
+
+    //write in new values given from parameters
+    Object.assign(newFlakeyObj, newVals);
+
+    return newFlakeyObj;
 };
 
 services.saveNewFlakey = function(flakeyObj) {
@@ -148,6 +162,27 @@ services.userCommitToFlakey = function(uid, flakeyid) {
             console.log('Services: failed to save Flakey');
             return err;
         });
+}
+
+services.updateFlakey = function(flakeyObj) {
+    services.validateAndCorrectFlakey(flakeyObj);
+
+    return dbFlakeysRef.child(flakeyObj.id).set(flakeyObj)
+        .then( () => true )
+        .catch( err => {
+            console.log('Services: failed to update Flakey');
+            return err;
+        });
+}
+
+services.deleteFlakey = function(flakeyid) {
+    console.log('Flakey deleted.');
+    return dbFlakeysRef.child(flakeyid).remove()
+    .then( () => true )
+    .catch( err => {
+        console.log('Services: failed to save Flakey');
+        return err;
+    });
 }
 
 

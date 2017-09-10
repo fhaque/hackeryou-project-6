@@ -9,7 +9,7 @@ class FlakeysView extends React.Component {
             <div>
                 {this.props.flakeys.map( flakey => {
                     return(
-                        <FlakeyCard key={flakey.id} expand={false} {...flakey} />
+                        <FlakeyCard key={flakey.id} expand={false} onlyCanCommit={this.props.onlyCanCommit} {...flakey} />
                     )
                 })}
             </div>
