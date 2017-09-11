@@ -23,12 +23,16 @@ const services = {
 // }; 
 
 services.getUserByUid = function(uid) {
-    const dbUser = dbUsersRef.child(uid);
+    console.log("Loggin user to grab data of: ",uid);
+    const dbUser = firebase.database().ref(`users/${uid}`);
+    // const dbUser = dbUsersRef.child(uid);
     return dbUser.once('value').then( snapshot => snapshot.val() );
 };
 
 services.getUsersByUid = function(uids) {
     let promises = [];
+
+    console.log(uids);
 
     if ( Array.isArray(uids) ) { //if Array
         promises = uids.map( (uid) => {

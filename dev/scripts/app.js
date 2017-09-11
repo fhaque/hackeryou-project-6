@@ -128,9 +128,12 @@ class App extends React.Component {
         this.handleFlakeySubscription = this.handleFlakeySubscription.bind(this);
         this.dbFlakeyToFlakey = this.dbFlakeyToFlakey.bind(this);
         this.dbUserToUser = this.dbUserToUser.bind(this);
+        this.flakeyToDbFlakey = this.flakeyToDbFlakey.bind(this);
 
         this.handleFlakeySelection = this.handleFlakeySelection.bind(this);
         this.handleFlakeyChange = this.handleFlakeyChange.bind(this);
+        this.handleFlakeySubmit = this.handleFlakeySubmit.bind(this);
+
 
     }
 
@@ -147,6 +150,11 @@ class App extends React.Component {
         e.preventDefault(e);
         //TODO: code.
         console.log('Flakey handleSubmit triggered. Needs code.', e, flakey);
+
+        //transform data for Firebase DB
+        const dbFlakey = this.flakeyToDbFlakey(flakey);
+
+        services.updateFlakey(dbFlakey);
     }
 
     handleFlakeyChange(e) {
@@ -202,6 +210,31 @@ class App extends React.Component {
 
     }
 
+    flakeyToDbFlakey(flakey) {
+        flakey = Object.assign({}, flakey);
+
+        //convert owner object to title
+        flakey.owner = flakey.owner.uid;
+
+        //convert member property array to member property object
+        const members = {};
+        flakey.members.forEach( (member) => {
+            members[member.uid] = true;
+        });
+        flakey.members = members;
+
+        //convert flakedMembers
+        const flakedMembers = {};
+        if ('flakedMembers' in flakey) {
+            flakey.flakedMembers.forEach( (flakedMember) => {
+                flakedMembers[flakedMember.uid] = true;
+            });
+        }
+
+        return flakey;
+
+    }
+
     dbFlakeyToFlakey(flakeyObj) {
         const flakey = Object.assign({}, flakeyObj);
 
@@ -215,6 +248,8 @@ class App extends React.Component {
         for (let uid in flakey.members) {
             userids.push(uid);
         }
+
+        console.log("Flakey user ID: ",userids);
 
         return services.getUsersByUid(userids)
             .then( userArray => {

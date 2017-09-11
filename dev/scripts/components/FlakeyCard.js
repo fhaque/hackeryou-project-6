@@ -74,6 +74,7 @@ class FlakeyCard extends React.Component {
         editMode = true;
         isOwner = true;
         isNew = true;
+        fullDisplayMode = true;
 
         const date= this.state.date;
         const time= this.state.time;
