@@ -116,108 +116,136 @@ class App extends React.Component {
             user: {
                 name: '',
                 email: '',
-                uid: '',
-                flakeyIds: [],
+                uid: ''
             },
             flakeys: [],
+            createFlakeyVals: {
+                title: '',
+                event: '',
+                date: moment().format('YYYY-MM-DD'),
+                time: moment().format('HH:mm'),
+                amount: 0.00,
+                description: '',
+            },
+            editFlakeyVals: {},
+            currentFlakey: {},
         };
 
-        this.handleUserSubscription = this.handleUserSubscription.bind(this);
-        this.handleFlakeySubscription = this.handleFlakeySubscription.bind(this);
-        this.dbFlakeyToFlakey = this.dbFlakeyToFlakey.bind(this);
-        this.dbUserToUser = this.dbUserToUser.bind(this);
 
+        this.handleCreateFlakeyCancel = this.handleCreateFlakeyCancel.bind(this);
+        this.handleCreateFlakeySubmit = this.handleCreateFlakeySubmit.bind(this);
+        this.handleCreateFlakeyChange = this.handleCreateFlakeyChange.bind(this);
+
+        this.handleEditFlakeyCancel = this.handleEditFlakeyCancel.bind(this);
+        this.handleEditFlakeyChange = this.handleCreateFlakeyChange.bind(this);
+        this.handleEditFlakeyDelete = this.handleEditFlakeyDelete.bind(this);
+        this.handleEditFlakeySubmit = this.handleEditFlakeySubmit.bind(this);
+
+        this.handleFlakeyCommit = this.handleFlakeyCommit.bind(this);
     }
 
-    handleUserSubscription(userObj) {
-        const user = this.dbUserToUser(userObj);
-        console.log('From User Subscription handle: ', user);
+    handleFlakeyCommit(e) {
+        e.preventDefault();
+        console.log('Flakey commit pressed. Need to complete.');
+    }
 
-        //unsubscribe to old flakeys
-        this.state.user.flakeyIds.map( (flakeyId) => {
-            services.unsubscribeToFlakey(flakeyId);
-        });
+    handleCreateFlakeyCancel(e) {
+        e.preventDefault();
+        console.log('Create Flakey Cancelled. Need to complete');
+    }
 
-        //convert flakeyIds object to an array
-        const flakeyIds = [];
-        for (let key in user.flakeyIds) {
-            flakeyIds.push(key);
-        }
-        user.flakeyIds = flakeyIds;
+    handleCreateFlakeySubmit(e) {
+        e.preventDefault();
+        console.log('Create Flakey Submitted.', this.state.createFlakeyVals);
 
-        //subscribe to new flakeys
-        user.flakeyIds.map( (flakeyId) => {
-            services.subscribeToFlakey(flakeyId, this.handleFlakeySubscription);
-        });
-
+        const flakeyVals = Object.assign({}, this.state.createFlakeyVals);
         
+        //set expiration date
+        flakeyVals.dateExpires = moment(this.state.createFlakeyVals.date + 'T' + this.state.createFlakeyVals.time).valueOf();
 
-        this.setState({ user });
+        //set creation date
+        flakeyVals.dateCreated = moment().valueOf();
+
+        //set owner
+        flakeyVals.owner = this.state.user.uid;
+
+        //TODO: Need to wire up
+        console.log(services.createFlakeyObj(flakeyVals));
+    }
+
+    handleCreateFlakeyChange(e) {
+        e.preventDefault();
+        const createFlakeyVals = this.state.createFlakeyVals;
+
+        createFlakeyVals[e.target.name] = e.target.value;
+
+        this.setState({ createFlakeyVals });
 
     }
 
-    handleFlakeySubscription(flakeyObj) {
-        this.dbFlakeyToFlakey(flakeyObj)
-            .then( flakey => {
-                const flakeys = Object.assign({}, this.state.flakeys);
+    handleEditFlakeySubmit(e) {
+        e.preventDefault();
+        const flakeyVals = Object.assign({}, this.state.editFlakeyVals);
+        const currentFlakey = Object.assign({}, this.state.currentFlakey);
 
-                flakeys[flakey.id] = flakey;
+        //remove any unecessary keys
+        for (let key in flakeyVals) {
+            if ( !(key in currentFlakey) ) {
+                delete flakeyVals[key];
+            }
+        }
 
-                console.log('From Flakeys Subscription handle: ', flakey);
+        Object.assign(currentFlakey, flakeyVals);
+
+        this.setState({ currentFlakey });
+
+        //TODO: watch for changes
+        services.updateFlakey(currentFlakey);
+    } 
+
+    handleEditFlakeyChange(e) {
+        e.preventDefault();
+
+        const editFlakeyVals = this.state.editFlakeyVals;
+
+        editFlakeyVals[e.target.name] = e.target.value;
+
+        this.setState({ editFlakeyVals });
+    }
+
+    handleEditFlakeyCancel(e) {
+        e.preventDefault();
+        console.log('Create Flakey Cancelled.');
+    }
+
+    handleEditFlakeyDelete(e) {
+        e.preventDefault();
+        services.deleteFlakey(currentFlakey.id);
+    }
+
+    componentDidMount() {
+        //TODO: get the uid from Auth
+        services.getUserByUid('-KtgPURrKqTSpsRVEO3F')
+            //recieve user info and set state
+            .then( user => {
+                console.log('User obj logged in:', user);
+                this.setState({ user });
+
+                return user;
+            })
+            //request the Flakeys the user is a member of.
+            .then( user => {
+                const flakeyIds = user.flakeyIds;
+
+                return services.getFlakeys(flakeyIds);
+            })
+            //recieve the Flakeys and change State
+            .then( flakeys => {
+                console.log("Flakeys retrieved", flakeys);
 
                 this.setState({ flakeys });
             });
 
-    }
-
-    dbFlakeyToFlakey(flakeyObj) {
-        const flakey = Object.assign({}, flakeyObj);
-
-        const userids = [flakey.owner];
-        for (let uid in flakey.members) {
-            userids.push(uid);
-        }
-
-        return services.getUsersByUid(userids)
-            .then( userArray => {
-
-                flakey.owner = {
-                    uid: userArray[0].uid,
-                    name: userArray[0].name
-                };
-
-                //remove owner
-                userArray.splice(0, 1);
-
-                //expand out member information for Flakey
-                flakey.members = userArray.map( user => {
-                    return {uid: user.uid, name: user.name}
-                });
-
-                //ensure flakedMembers are in sync
-                if ('flakedMembers' in flakey) {
-                    const flakedMembersArray = [];
-                    flakey.members.map( member => {
-                        if (member.uid in flakey.flakedMembers) {
-                            flakedMembersArray.push(flakey);
-                        }
-                    });
-
-                    flakey.flakedMembers = flakedMembersArray;
-                }
-
-                return flakey;
-
-            });
-
-    }
-
-    dbUserToUser(userObj) {
-        return userObj;
-    }
-
-    componentDidMount() {
-        services.subscribeToUser('-KtgPURrKqTSpsRVEO3F', this.handleUserSubscription);
 
         //populate user info
         // services.getUserByUid('-Ktcn3Bh5w7mZRZKwqwE').then( val => console.log(val.val()));
@@ -251,14 +279,7 @@ class App extends React.Component {
         // services.userCommitToFlakey('kiki', '-Ktcn3BsQrNOu06AXUoJ');
     }
 
-
     render() {
-        //create convenient array for flakeys
-        const flakeys = [];
-        for (let key in this.state.flakeys) {
-            flakeys.push(this.state.flakeys[key]);
-        }
-
         return (
             <div>
                 <Header userName={this.state.user.name} {...this.header} />
@@ -269,7 +290,10 @@ class App extends React.Component {
                                 handleCancel={this.handleEditFlakeyCancel}handleChange={this.handleEditFlakeyChange}
                                 handleDelete={this.handleEditFlakeyDelete}formVals={this.state.editFlakeyVals}/>*/}
 
-                
+                <FlakeyCard expand={true} 
+                            //only allow committing if not owner.
+                            handleCommit={this.handleFlakeyCommit}
+                            onlyCanCommit={false} {...this.state.flakeys[0]} />
 
             </div>
         )

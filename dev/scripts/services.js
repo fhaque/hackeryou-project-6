@@ -27,6 +27,23 @@ services.getUserByUid = function(uid) {
     return dbUser.once('value').then( snapshot => snapshot.val() );
 };
 
+services.getUsersByUid = function(uids) {
+    let promises = [];
+
+    if ( Array.isArray(uids) ) { //if Array
+        promises = uids.map( (uid) => {
+            return services.getUserByUid(uid);
+        });
+
+    } else { //if plain Object of form {uid: true, ...}
+        for (let uid in uids) {
+            promises.push( services.getUserByUid(uid) );
+        }
+    }
+
+    return Promise.all(promises);
+}
+
 services.createUserObj = function() {
     return {
         name: '',
@@ -51,6 +68,26 @@ services.validateAndCorrectUser = function(uid, userObj) {
     if (userObj.uid !== uid) {
         userObj.uid = uid;
     }
+}
+
+services.subscribeToUser = function(uid, cb) {
+    const dbUser = dbUsersRef.child(uid);
+    return dbUser.on('value', snapshot => cb(snapshot.val()) );
+}
+
+services.unsubscribeToUser = function(uid) {
+    const dbUser = dbUsersRef.child(uid);
+    dbUser.off();
+}
+
+services.subscribeToFlakey = function(flakeyId, cb) {
+    const dbFlakey = dbFlakeysRef.child(flakeyId);
+    return dbFlakey.on('value', snapshot => cb(snapshot.val()) );
+}
+
+services.unsubscribeToFlakey = function(flakeyId) {
+    const dbFlakey = dbFlakeysRef.child(flakeyId);
+    dbFlakey.off();
 }
 
 services.getFlakey = function(flakeyId) {
