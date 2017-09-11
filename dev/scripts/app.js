@@ -143,6 +143,11 @@ class App extends React.Component {
         }
     }
 
+    handleFlakeySubmit(e, flakey) {
+        //TODO: code.
+        console.log('Flakey handleSubmit triggered. Needs code.', e, flakey);
+    }
+
     handleFlakeyChange(e) {
         e.preventDefault();
         console.log('logged changes.');
@@ -299,7 +304,8 @@ class App extends React.Component {
                             flakeys={flakeys}
                             focusedFlakey={this.state.focusedFlakey}
                             handleFlakeySelection={this.handleFlakeySelection}
-                            handleFlakeyChange={this.handleFlakeyChange}/>
+                            handleFlakeyChange={this.handleFlakeyChange}
+                            handleFlakeySubmit={this.handleFlakeySubmit}/>
                 {/*<CreateFlakeyView   handleSubmit={this.handleCreateFlakeySubmit}
                                     handleCancel={this.handleCreateFlakeyCancel}handleChange={this.handleCreateFlakeyChange}formVals={this.state.createFlakeyVals}/>*/}
                 {/*<EditFlakeyView handleSubmit={this.handleEditFlakeySubmit}
