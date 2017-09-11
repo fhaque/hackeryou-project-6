@@ -7,7 +7,7 @@ import moment from 'moment';
 
 const FlakeyCard = function(props) {
     // const {classEnvelope} = props.classes; 
-    const {title, event, amount, dateCreated, dateExpires, owner, members, date, time, description} = props;
+    const {title, event, amount, dateCreated, dateExpires, dateCreatedFormatted,dateExpiresFormatted, owner, members, date, time, description} = props;
 
     const {handleClick, handleChange} = props;
     
@@ -60,7 +60,7 @@ const FlakeyCard = function(props) {
                     </label>
                 </span>
             ) : (
-                <span>{dateExpires}</span>)}
+                <span>{dateExpiresFormatted}</span>)}
             </p>
 
             <p>Punishment: 
@@ -74,7 +74,7 @@ const FlakeyCard = function(props) {
             
             </p>
 
-            <p>Description:
+            <p>Description:</p>
             { isEditable ? (
                 <label>
                 <span style={{display:'none'}}>Description:</span>
@@ -83,10 +83,8 @@ const FlakeyCard = function(props) {
             ) : (
                 <p>{description}</p>)}
 
-            </p>
-
             <p>Created by: <span>{owner.name}</span></p>
-            <p>Created On: <span>{dateCreated}</span></p>
+            <p>Created On: <span>{dateCreatedFormatted}</span></p>
             {isLargeView && <p>Potential Flakers:</p>}
             {isLargeView && <ul>
                 {members.map( (member) => {

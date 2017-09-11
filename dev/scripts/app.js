@@ -199,6 +199,12 @@ class App extends React.Component {
     dbFlakeyToFlakey(flakeyObj) {
         const flakey = Object.assign({}, flakeyObj);
 
+        //make date readable
+        flakey.dateExpiresFormatted = moment(flakey.dateExpires).format('MMMM Do YYYY, h:mm:ss a');
+
+        flakey.dateCreatedFormatted = moment(flakey.dateCreated).format('MMMM Do YYYY, h:mm:ss a');
+
+        //create a list of user ids to get info about.
         const userids = [flakey.owner];
         for (let uid in flakey.members) {
             userids.push(uid);
