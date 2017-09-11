@@ -14,6 +14,11 @@ class FlakeyCard extends React.Component {
             isOwner: false,
             fullDisplayMode: false,
             isNew: false,
+
+            //form specific inputs
+            date: null,
+            time: null,
+
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -21,24 +26,46 @@ class FlakeyCard extends React.Component {
     }
 
     componentDidMount() {
-        console.log("Flakey mounted:",this.props.flakey);
 
         this.setState({ 
             flakey: Object.assign({}, this.props.flakey),
             isNew: this.props.isNew || false,
             isOwner: this.props.isOwner || false,
             editMode: this.props.editMode || false,
+            date: moment(this.props.flakey.dateExpires).format('YYYY-MM-DD'),
+            time: moment(this.props.flakey.dateExpires).format('HH:mm'),
         });
     }
 
     handleChange(e) {
         //TODO: code
-        console.log('Flakey handleChange triggered. Needs to fix.');
+        const flakey = this.state.flakey;
+
+        //handle the date and time inputs to convert to dateExpires format
+        if (e.target.name === 'date' || e.target.name === 'time') {
+            this.setState({ [e.target.name]: e.target.value });
+
+            let dateExpires = 0;
+
+            if (e.target.name === 'date') {
+                dateExpires = moment( e.target.value + 'T' + this.state.time).valueOf();
+            } else if (e.target.name === 'time') {
+                dateExpires = moment( this.state.date + 'T' + e.target.value).valueOf();
+            }
+
+            flakey['dateExpires'] = dateExpires;
+
+        } else {
+            flakey[e.target.name] = e.target.value;
+        }
+
+        this.setState({ flakey });
+
     } 
     
 
     render() {
-        console.log(this.state.flakey);
+
         const {title, event, amount, dateCreated, dateExpires, owner, members, description} = this.state.flakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], description: ''};
 
         let {editMode, isOwner, fullDisplayMode, isNew} = this.state;
@@ -48,10 +75,10 @@ class FlakeyCard extends React.Component {
         isOwner = true;
         isNew = true;
 
-        const date= null;
-        const time=null;
-        const dateCreatedFormatted = null;
-        const dateExpiresFormatted = null;
+        const date= this.state.date;
+        const time= this.state.time;
+        const dateCreatedFormatted = moment(dateCreated).format('MMMM Do YYYY, h:mm:ss a');
+        const dateExpiresFormatted = moment(dateExpires).format('MMMM Do YYYY, h:mm:ss a');
 
         /* ***** */
 

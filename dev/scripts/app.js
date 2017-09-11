@@ -144,6 +144,7 @@ class App extends React.Component {
     }
 
     handleFlakeySubmit(e, flakey) {
+        e.preventDefault(e);
         //TODO: code.
         console.log('Flakey handleSubmit triggered. Needs code.', e, flakey);
     }
@@ -205,9 +206,9 @@ class App extends React.Component {
         const flakey = Object.assign({}, flakeyObj);
 
         //make date readable
-        flakey.dateExpiresFormatted = moment(flakey.dateExpires).format('MMMM Do YYYY, h:mm:ss a');
+        // flakey.dateExpiresFormatted = moment(flakey.dateExpires).format('MMMM Do YYYY, h:mm:ss a');
 
-        flakey.dateCreatedFormatted = moment(flakey.dateCreated).format('MMMM Do YYYY, h:mm:ss a');
+        // flakey.dateCreatedFormatted = moment(flakey.dateCreated).format('MMMM Do YYYY, h:mm:ss a');
 
         //create a list of user ids to get info about.
         const userids = [flakey.owner];
