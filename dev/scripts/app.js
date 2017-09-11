@@ -120,6 +120,8 @@ class App extends React.Component {
                 flakeyIds: [],
             },
             flakeys: [],
+            focusedFlakey: {id: ''},
+            flakeyForm: {},
         };
 
         this.handleUserSubscription = this.handleUserSubscription.bind(this);
@@ -127,6 +129,30 @@ class App extends React.Component {
         this.dbFlakeyToFlakey = this.dbFlakeyToFlakey.bind(this);
         this.dbUserToUser = this.dbUserToUser.bind(this);
 
+        this.handleFlakeySelection = this.handleFlakeySelection.bind(this);
+        this.handleFlakeyChange = this.handleFlakeyChange.bind(this);
+
+    }
+
+    handleFlakeySelection(flakeyId) {
+        if(this.state.focusedFlakey.id !== flakeyId) {
+            console.log('focusedFlakey reset.');
+            this.setState({ 
+                focusedFlakey: this.state.flakeys[flakeyId],
+            });
+        }
+    }
+
+    handleFlakeyChange(e) {
+        e.preventDefault();
+        console.log('logged changes.');
+        const focusedFlakey = this.state.focusedFlakey;
+
+        console.log(e.target.value);
+
+        focusedFlakey[e.target.name] = e.target.value;
+
+        this.setState({ focusedFlakey });
     }
 
     handleUserSubscription(userObj) {
@@ -262,7 +288,12 @@ class App extends React.Component {
         return (
             <div>
                 <Header userName={this.state.user.name} {...this.header} />
-                {/*<FlakeysView user={this.state.user} flakeys={this.state.flakeys} />*/}
+
+                <FlakeysView user={this.state.user} 
+                            flakeys={flakeys}
+                            focusedFlakey={this.state.focusedFlakey}
+                            handleFlakeySelection={this.handleFlakeySelection}
+                            handleFlakeyChange={this.handleFlakeyChange}/>
                 {/*<CreateFlakeyView   handleSubmit={this.handleCreateFlakeySubmit}
                                     handleCancel={this.handleCreateFlakeyCancel}handleChange={this.handleCreateFlakeyChange}formVals={this.state.createFlakeyVals}/>*/}
                 {/*<EditFlakeyView handleSubmit={this.handleEditFlakeySubmit}
