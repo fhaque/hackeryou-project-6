@@ -287,8 +287,16 @@ class App extends React.Component {
         return userObj;
     }
 
+    userToDbUser(user) {
+        return user;
+    }
+
     componentDidMount() {
         services.subscribeToUser('-KtgPURrKqTSpsRVEO3F', this.handleUserSubscription);
+
+        // services.createFlakey('-KtgPURrKqTSpsRVEO3F');
+
+
 
         //populate user info
         // services.getUserByUid('-Ktcn3Bh5w7mZRZKwqwE').then( val => console.log(val.val()));

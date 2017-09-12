@@ -65,6 +65,16 @@ services.saveNewUser = function(uid, userObj) {
         });
 };
 
+services.updateUser = function(userObj) {
+
+    return dbUsersRef.child(userObj.uid).set(userObj)
+        .then( () => true )
+        .catch( err => {
+            console.log('Services: failed to update User.');
+            return err;
+        });
+}
+
 services.validateAndCorrectUser = function(uid, userObj) {
     if (userObj.uid !== uid) {
         userObj.uid = uid;
@@ -202,6 +212,49 @@ services.userCommitToFlakey = function(uid, flakeyid) {
             console.log('Services: failed to save Flakey');
             return err;
         });
+}
+
+services.addFlakeyToUser = function(uid, flakeyid) {
+    return dbUsersRef.child(uid).child('flakeyid').update({[flakeyid]: true})
+    .then( () => {
+        return dbFlakeysRef.child(flakeyid).child('members').update({[uid]: true});
+    })
+    .then( () => true)
+    .catch( err => {
+        console.log('Services: failed to add Flakey to User.');
+        return err;
+    });;
+}
+
+//TODO: seperate out the user update from the flakey update.
+services.createFlakey = function(uid) {
+    const flakey = services.createFlakeyObj({});
+
+    flakey.owner = uid;
+    flakey.members = {[uid]: true};
+    flakey.dateCreated = Date.now();
+    flakey.dateExpires = Date.now() + 9999999999;
+    
+    const key = dbFlakeysRef.push().key;
+    flakey.id = key;
+
+    return dbFlakeysRef.child(key).set(flakey).then( () => {
+        return dbUsersRef.child(uid).child('flakeyIds').update({ [key]: true });
+
+        // return services.getUserByUid(uid).then( user => {
+        //     user.flakeyIds[key] = true;
+        //     return user;
+        // })
+        // .then( user => {
+        //     return services.updateUser(user);
+        // });
+
+    })
+    .then( () => true )
+    .catch( err => {
+        console.log('Services: failed to create Flakey');
+        return err;
+    });
 }
 
 services.updateFlakey = function(flakeyObj) {
