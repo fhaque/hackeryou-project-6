@@ -8,8 +8,6 @@ class FlakeyCardViewHeader extends React.Component {
 
         const { editMode } = this.props;
 
-        console.log(editMode);
-
         return (
             <header>
                 {editMode && <button name="cancel" onClick={handleClick}>Cancel</button>}

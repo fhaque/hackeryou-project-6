@@ -22,7 +22,7 @@ class FlakeyCard extends React.Component {
             time: null,
             membersToRemove: [],
             membersToFlakedMembers: [],
-
+            uneditedFlakey: {},
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -37,7 +37,6 @@ class FlakeyCard extends React.Component {
         const membersToFlakedMembers = [];
 
         if ('flakedMembers' in this.props.flakey) {
-            console.log('flaked members', this.props.flakey.flakedMembers);
             this.props.flakey.flakedMembers.forEach( (member) => {
                 membersToFlakedMembers.push(member.uid);
             });
@@ -45,7 +44,8 @@ class FlakeyCard extends React.Component {
 
         this.setState({ 
             flakey: Object.assign({}, this.props.flakey),
-            isNew: this.props.isNew || false,
+            uneditedFlakey: Object.assign({}, this.props.flakey),
+            isNew: this.props.isNew || (this.props.flakey.dateExpires === 0),
             isOwner: this.props.isOwner || false,
             editMode: this.props.editMode || false,
             fullDisplayMode: this.props.fullDisplayMode || false,
@@ -56,12 +56,26 @@ class FlakeyCard extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('component will receive props', nextProps);
         const {flakey} = nextProps;
+        const uneditedFlakey = Object.assign({}, flakey);
+
+        this.setState({ uneditedFlakey });
 
         if(!this.state.editMode) {
-            this.setState({ flakey });
+            this.setState({ flakey: this.state.uneditedFlakey });
         }
+
+
+        //initialize membersToFlakedMembers for checklist
+        const membersToFlakedMembers = [];
+
+        if ('flakedMembers' in uneditedFlakey) {
+            uneditedFlakey.flakedMembers.forEach( (member) => {
+                membersToFlakedMembers.push(member.uid);
+            });
+        }
+
+        this.setState({ membersToFlakedMembers });
     } 
 
     handleSubmit(e) {
@@ -79,7 +93,6 @@ class FlakeyCard extends React.Component {
             return this.state.membersToFlakedMembers.includes(member.uid);
         });
 
-        // console.log(flakey);
 
         this.setState({ flakey });
 
@@ -122,7 +135,6 @@ class FlakeyCard extends React.Component {
                 (value) ? membersToFlakedMembers.push(checkboxId) : this.removeFromArray(membersToFlakedMembers, checkboxId);
             }
 
-            // console.log(membersToFlakedMembers, membersToRemove);
 
             this.setState({ membersToFlakedMembers, membersToRemove })
         } else {
@@ -145,18 +157,17 @@ class FlakeyCard extends React.Component {
 
         const {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete} = this.state.flakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
 
-        const uneditedFlakey = this.props.flakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
+        const uneditedFlakey = this.props.uneditedFlakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
 
-        
+        //TODO: deprecate this
+        isNew = (this.state.uneditedFlakey.dateExpires === 0);
 
         /* TODO: remove */
         // editMode = true;
         // isOwner = true;
         // isNew = true;
         // fullDisplayMode = true;
-        // console.log(editMode);
 
-        console.log("Flakeycard", this.props.editMode);
 
         const date= this.state.date;
         const time= this.state.time;
@@ -202,7 +213,7 @@ class FlakeyCard extends React.Component {
                         </label>
                     </span>
                 ) : (
-                    <span>{uneditedFlakey.dateExpiresFormatted}</span>)}
+                    <span>{dateExpiresFormatted}</span>)}
                 </p>
 
                 <p>Punishment: 
@@ -227,7 +238,8 @@ class FlakeyCard extends React.Component {
 
                 <p>Created by: <span>{owner.name}</span></p>
                 <p>Created On: <span>{dateCreatedFormatted}</span></p>
-                {fullDisplayMode && <p>Potential Flakers:</p>}
+                {(fullDisplayMode && !complete) && <p>Potential Flakers:</p>}
+                {(fullDisplayMode && complete) && <p>Participants:</p>}
                 {fullDisplayMode &&
                     ((isOwner && editMode && !complete) ? 
                         <FlakeyMemberChecklist 
@@ -249,11 +261,20 @@ class FlakeyCard extends React.Component {
                         </ul>
                     )
                 }
+                {(fullDisplayMode && uneditedFlakey.flakedMembers && !editMode) && <p>Flakers</p>}
+                {(fullDisplayMode && uneditedFlakey.flakedMembers && !editMode) && 
+                    <ul>
+                    {uneditedFlakey.flakedMembers.map( (member) => {
+                        return (
+                            <li key={member.uid}>{member.name}</li>
+                        );
+                    })}
+                    </ul>
+                }
                 
                 {isOwner && <button>Save & Commit to Flakey</button>}
                 {!isOwner && <button>Commit to Flakey</button>}
             </form>
-            {isOwner && <button>Cancel</button>}
             {isOwner && <button>Delete</button>}
             </div>
         ); 

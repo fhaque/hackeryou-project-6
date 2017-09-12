@@ -143,9 +143,13 @@ class App extends React.Component {
 
     }
 
-    handleCreateNewFlakey(e) {
+    handleCreateNewFlakey(e,history) {
         e.preventDefault();
-        
+
+        history.push('/flakeys/');
+
+        services.createFlakey(this.state.user.uid)
+        .then( flakeyId => history.push(`/flakeys/${flakeyId}`) );
     }
 
     // handleEditFlakey(e) {
@@ -372,17 +376,23 @@ class App extends React.Component {
             handleFlakeySubmit: this.handleFlakeySubmit
         };
 
+        const headerProps = {
+            user: this.state.user,
+            handleCreateNewFlakey: this.handleCreateNewFlakey,
+        }
+
         return (
             <div>
-                <Header user={this.state.user} 
-                        handleCreateNewFlakey={this.handleCreateNewFlakey}
-                        {...this.header} />
                 <Router>
+                    <div>
+                    <Route path="/" render={props => <Header {...props} {...headerProps}
+                        {...this.header} />} />
                     <Switch>
                         <Route exact path="/flakeys" render={props => <FlakeysView {...flakeysViewProps} />} />
                         
-                        <Route path="/flakeys/:flakeyId" render={props => <FlakeyCardView {...props} {...flakeyCardViewProps} />} />
+                        <Route exact path="/flakeys/:flakeyId" render={props => <FlakeyCardView {...props} {...flakeyCardViewProps} />} />
                     </Switch>
+                    </div>
                 </Router>
                 {/*<FlakeysView user={this.state.user} 
                             flakeys={flakeys}

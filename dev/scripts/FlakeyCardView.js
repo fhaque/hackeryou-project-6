@@ -52,8 +52,6 @@ class FlakeyCardView extends React.Component {
         if (name === "edit" || name === "cancel") {
             this.toggleEditMode();
         }
-
-        console.log(name);
     }
 
     toggleEditMode() {
@@ -76,11 +74,8 @@ class FlakeyCardView extends React.Component {
 
         const { isNew, editMode } = this.state;
         
-        console.log(flakey);
 
         const isOwner = (user.uid === flakey.owner.uid);
-
-        console.log("isOwner", isOwner);
         
 
         return (

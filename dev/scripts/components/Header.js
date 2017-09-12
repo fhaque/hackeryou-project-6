@@ -8,12 +8,13 @@ const Header = function(props) {
 
     const {handleCreateNewFlakey, handleEditFlakey} = props;
 
+    console.log("From header", props);
 
 
     return (
         <header className="Header">
             <h1 className="Header__title">{title}</h1>
-            <button onClick={handleCreateNewFlakey} >Create New Flakey</button>
+            <button onClick={(e) => handleCreateNewFlakey(e, props.history)} >Create New Flakey</button>
             {/* editFlakeyMode ? 
                 <button className="Header__btn Header__editBtn" onClick={handleEditFlakey}>Cancel</button>
             : 

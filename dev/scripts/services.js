@@ -210,7 +210,6 @@ services.dbFlakeyToFlakey = function(flakeyObj) {
 
     return services.getUsersByUid(userids)
         .then( userArray => {
-            console.log('user array:', userArray);
             flakey.owner = {
                 uid: userArray[0].uid,
                 name: userArray[0].name
@@ -318,7 +317,7 @@ services.createFlakey = function(uid) {
     flakey.owner = uid;
     flakey.members = {[uid]: true};
     flakey.dateCreated = Date.now();
-    flakey.dateExpires = Date.now() + 9999999999;
+    flakey.dateExpires = 0;
     
     const key = dbFlakeysRef.push().key;
     flakey.id = key;
@@ -335,7 +334,7 @@ services.createFlakey = function(uid) {
         // });
 
     })
-    .then( () => true )
+    .then( () => key )
     .catch( err => {
         console.log('Services: failed to create Flakey');
         return err;
