@@ -36,6 +36,7 @@ class FlakeyCard extends React.Component {
         const membersToFlakedMembers = [];
 
         if ('flakedMembers' in this.props.flakey) {
+            console.log('flaked members', this.props.flakey.flakedMembers);
             this.props.flakey.flakedMembers.forEach( (member) => {
                 membersToFlakedMembers.push(member.uid);
             });

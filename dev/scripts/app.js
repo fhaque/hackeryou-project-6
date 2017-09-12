@@ -128,9 +128,9 @@ class App extends React.Component {
 
         this.handleUserSubscription = this.handleUserSubscription.bind(this);
         this.handleFlakeySubscription = this.handleFlakeySubscription.bind(this);
-        this.dbFlakeyToFlakey = this.dbFlakeyToFlakey.bind(this);
-        this.dbUserToUser = this.dbUserToUser.bind(this);
-        this.flakeyToDbFlakey = this.flakeyToDbFlakey.bind(this);
+        // this.dbFlakeyToFlakey = this.dbFlakeyToFlakey.bind(this);
+        // this.dbUserToUser = this.dbUserToUser.bind(this);
+        // this.flakeyToDbFlakey = this.flakeyToDbFlakey.bind(this);
 
         this.handleFlakeySelection = this.handleFlakeySelection.bind(this);
         this.handleFlakeyChange = this.handleFlakeyChange.bind(this);
@@ -152,7 +152,7 @@ class App extends React.Component {
         e.preventDefault();
 
         //transform data for Firebase DB
-        const dbFlakey = this.flakeyToDbFlakey(flakey);
+        const dbFlakey = services.flakeyToDbFlakey(flakey);
 
         console.log(flakey);
         console.log("Sending flakeyobj to services:",dbFlakey);
@@ -172,7 +172,7 @@ class App extends React.Component {
     }
 
     handleUserSubscription(userObj) {
-        const user = this.dbUserToUser(userObj);
+        const user = services.dbUserToUser(userObj);
         console.log('From User Subscription handle: ', user);
 
         //unsubscribe to old flakeys
@@ -198,105 +198,102 @@ class App extends React.Component {
     }
 
     handleFlakeySubscription(flakeyObj) {
-        this.dbFlakeyToFlakey(flakeyObj)
-            .then( flakey => {
-                const flakeys = Object.assign({}, this.state.flakeys);
+        if(flakeyObj) {
 
-                flakeys[flakey.id] = flakey;
+            services.dbFlakeyToFlakey(flakeyObj)
+                .then( flakey => {
+                    const flakeys = Object.assign({}, this.state.flakeys);
 
-                console.log('From Flakeys Subscription handle: ', flakey);
+                    flakeys[flakey.id] = flakey;
 
-                this.setState({ flakeys });
-            });
+                    console.log('From Flakeys Subscription handle: ', flakey);
 
-    }
-
-    flakeyToDbFlakey(flakey) {
-        const newflakey = Object.assign({}, flakey);
-
-        //convert owner object to title
-        newflakey.owner = newflakey.owner.uid;
-
-        //convert member property array to member property object
-        const members = {};
-        newflakey.members.forEach( (member) => {
-            members[member.uid] = true;
-        });
-        newflakey.members = members;
-
-        //convert flakedMembers
-        const flakedMembers = {};
-        if ('flakedMembers' in flakey) {
-            newflakey.flakedMembers.forEach( (flakedMember) => {
-                flakedMembers[flakedMember.uid] = true;
-            });
-        }
-        newflakey.flakedMembers = flakedMembers;
-
-        return newflakey;
-
-    }
-
-    dbFlakeyToFlakey(flakeyObj) {
-        const flakey = Object.assign({}, flakeyObj);
-
-        //make date readable
-        // flakey.dateExpiresFormatted = moment(flakey.dateExpires).format('MMMM Do YYYY, h:mm:ss a');
-
-        // flakey.dateCreatedFormatted = moment(flakey.dateCreated).format('MMMM Do YYYY, h:mm:ss a');
-
-        //create a list of user ids to get info about.
-        const userids = [flakey.owner];
-        for (let uid in flakey.members) {
-            userids.push(uid);
-        }
-
-        return services.getUsersByUid(userids)
-            .then( userArray => {
-
-                flakey.owner = {
-                    uid: userArray[0].uid,
-                    name: userArray[0].name
-                };
-
-                //remove owner
-                userArray.splice(0, 1);
-
-                //expand out member information for Flakey
-                flakey.members = userArray.map( user => {
-                    return {uid: user.uid, name: user.name}
+                    this.setState({ flakeys });
                 });
-
-                //ensure flakedMembers are in sync
-                if ('flakedMembers' in flakey) {
-                    const flakedMembersArray = [];
-                    flakey.members.map( member => {
-                        if (member.uid in flakey.flakedMembers) {
-                            flakedMembersArray.push(member);
-                        }
-                    });
-
-                    flakey.flakedMembers = flakedMembersArray;
-                }
-
-                return flakey;
-
-            });
-
+        }
     }
 
-    dbUserToUser(userObj) {
-        return userObj;
-    }
+    // flakeyToDbFlakey(flakey) {
+    //     const newflakey = Object.assign({}, flakey);
 
-    userToDbUser(user) {
-        return user;
-    }
+    //     //convert owner object to title
+    //     newflakey.owner = newflakey.owner.uid;
+
+    //     //convert member property array to member property object
+    //     const members = {};
+    //     newflakey.members.forEach( (member) => {
+    //         members[member.uid] = true;
+    //     });
+    //     newflakey.members = members;
+
+    //     //convert flakedMembers
+    //     const flakedMembers = {};
+    //     if ('flakedMembers' in flakey) {
+    //         newflakey.flakedMembers.forEach( (flakedMember) => {
+    //             flakedMembers[flakedMember.uid] = true;
+    //         });
+    //     }
+    //     newflakey.flakedMembers = flakedMembers;
+
+    //     return newflakey;
+
+    // }
+
+    // dbFlakeyToFlakey(flakeyObj) {
+    //     const flakey = Object.assign({}, flakeyObj);
+
+    //     //make date readable
+    //     // flakey.dateExpiresFormatted = moment(flakey.dateExpires).format('MMMM Do YYYY, h:mm:ss a');
+
+    //     // flakey.dateCreatedFormatted = moment(flakey.dateCreated).format('MMMM Do YYYY, h:mm:ss a');
+
+    //     //create a list of user ids to get info about.
+    //     const userids = [flakey.owner];
+    //     for (let uid in flakey.members) {
+    //         userids.push(uid);
+    //     }
+
+    //     console.log("Flakey being converted:", flakey, userids)
+
+    //     return services.getUsersByUid(userids)
+    //         .then( userArray => {
+    //             console.log('user array:', userArray);
+    //             flakey.owner = {
+    //                 uid: userArray[0].uid,
+    //                 name: userArray[0].name
+    //             };
+
+    //             //remove owner
+    //             userArray.splice(0, 1);
+
+    //             //expand out member information for Flakey
+    //             flakey.members = userArray.map( user => {
+    //                 return {uid: user.uid, name: user.name}
+    //             });
+
+    //             //ensure flakedMembers are in sync
+    //             if ('flakedMembers' in flakey) {
+    //                 const flakedMembersArray = [];
+    //                 flakey.members.map( member => {
+    //                     if (member.uid in flakey.flakedMembers) {
+    //                         flakedMembersArray.push(member);
+    //                     }
+    //                 });
+
+    //                 flakey.flakedMembers = flakedMembersArray;
+    //             }
+
+    //             return flakey;
+
+    //         });
+
+    // }
+
 
     componentDidMount() {
-        services.subscribeToUser('-KtgPURrKqTSpsRVEO3F', this.handleUserSubscription);
+        services.subscribeToUser('-Ktcn3Bh5w7mZRZKwqwE', this.handleUserSubscription);
 
-
+//'-KtgPURrKqTSpsRVEO3F'
 
         // services.createFlakey('-KtgPURrKqTSpsRVEO3F');
 

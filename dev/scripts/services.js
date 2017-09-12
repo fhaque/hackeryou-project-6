@@ -54,6 +54,14 @@ services.createUserObj = function() {
     }
 }
 
+services.dbUserToUser = function(userObj) {
+    return userObj;
+}
+
+services.userToDbUser = function(user) {
+    return user;
+}
+
 services.saveNewUser = function(uid, userObj) {
     services.validateAndCorrectUser(uid, userObj);
 
@@ -83,7 +91,7 @@ services.validateAndCorrectUser = function(uid, userObj) {
 
 services.subscribeToUser = function(uid, cb) {
     const dbUser = dbUsersRef.child(uid);
-    return dbUser.on('value', snapshot => cb(snapshot.val()) );
+    return dbUser.on('value', snapshot => cb(snapshot.val() || null) );
 }
 
 services.unsubscribeToUser = function(uid) {
@@ -93,7 +101,7 @@ services.unsubscribeToUser = function(uid) {
 
 services.subscribeToFlakey = function(flakeyId, cb) {
     const dbFlakey = dbFlakeysRef.child(flakeyId);
-    return dbFlakey.on('value', snapshot => cb(snapshot.val()) );
+    return dbFlakey.on('value', snapshot => cb(snapshot.val() || null) );
 }
 
 services.unsubscribeToFlakey = function(flakeyId) {
@@ -156,6 +164,83 @@ services.createFlakeyObj = function(flakeyVals) {
 
     return newFlakeyObj;
 };
+
+services.flakeyToDbFlakey = function(flakey) {
+    const newflakey = Object.assign({}, flakey);
+
+    //convert owner object to title
+    newflakey.owner = newflakey.owner.uid;
+
+    //convert member property array to member property object
+    const members = {};
+    newflakey.members.forEach( (member) => {
+        members[member.uid] = true;
+    });
+    newflakey.members = members;
+
+    //convert flakedMembers
+    const flakedMembers = {};
+    if ('flakedMembers' in flakey) {
+        newflakey.flakedMembers.forEach( (flakedMember) => {
+            flakedMembers[flakedMember.uid] = true;
+        });
+    }
+    newflakey.flakedMembers = flakedMembers;
+
+    return newflakey;
+
+}
+
+
+services.dbFlakeyToFlakey = function(flakeyObj) {
+    const flakey = Object.assign({}, flakeyObj);
+
+    //make date readable
+    // flakey.dateExpiresFormatted = moment(flakey.dateExpires).format('MMMM Do YYYY, h:mm:ss a');
+
+    // flakey.dateCreatedFormatted = moment(flakey.dateCreated).format('MMMM Do YYYY, h:mm:ss a');
+
+    //create a list of user ids to get info about.
+    const userids = [flakey.owner];
+    for (let uid in flakey.members) {
+        userids.push(uid);
+    }
+
+    console.log("Flakey being converted:", flakey, userids)
+
+    return services.getUsersByUid(userids)
+        .then( userArray => {
+            console.log('user array:', userArray);
+            flakey.owner = {
+                uid: userArray[0].uid,
+                name: userArray[0].name
+            };
+
+            //remove owner
+            userArray.splice(0, 1);
+
+            //expand out member information for Flakey
+            flakey.members = userArray.map( user => {
+                return {uid: user.uid, name: user.name}
+            });
+
+            //ensure flakedMembers are in sync
+            if ('flakedMembers' in flakey) {
+                const flakedMembersArray = [];
+                flakey.members.map( member => {
+                    if (member.uid in flakey.flakedMembers) {
+                        flakedMembersArray.push(member);
+                    }
+                });
+
+                flakey.flakedMembers = flakedMembersArray;
+            }
+
+            return flakey;
+
+        });
+
+}
 
 services.saveNewFlakey = function(flakeyObj) {
     const key = dbFlakeysRef.push().key;

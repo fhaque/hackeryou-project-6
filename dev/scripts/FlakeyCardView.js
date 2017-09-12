@@ -14,19 +14,29 @@ class FlakeyCardView extends React.Component {
 
     componentDidMount() {
         const flakeyId = this.props.match.params.flakeyId;
-        console.log(flakeyId);
 
         services.getFlakey(flakeyId)
-        .then( flakey => {
+        .then( flakeyObj => {
+            return services.dbFlakeyToFlakey(flakeyObj);
+        })
+        .then(flakey => {
             this.setState({ flakey });
         });
     }
 
+
+
+
     render() {
+        const user = this.props.user;
+        const flakey = this.state.flakey;
+
         return (
             <div>
                 {this.state.flakey ? (
                     <FlakeyCard
+                            isOwner={user.uid === flakey.owner.uid}
+                            editMode={true}
                             fullDisplayMode={true}
                             handleSubmit={this.props.handleFlakeySubmit}
                             flakey={this.state.flakey}
