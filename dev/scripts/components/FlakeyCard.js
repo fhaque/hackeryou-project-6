@@ -30,6 +30,7 @@ class FlakeyCard extends React.Component {
 
     }
 
+
     componentDidMount() {
 
         //initialize membersToFlakedMembers for checklist
@@ -53,6 +54,15 @@ class FlakeyCard extends React.Component {
             membersToFlakedMembers: membersToFlakedMembers,
         });
     }
+
+    componentWillReceiveProps(nextProps) {
+        console.log('component will receive props', nextProps);
+        const {flakey} = nextProps;
+
+        if(!this.state.editMode) {
+            this.setState({ flakey });
+        }
+    } 
 
     handleSubmit(e) {
         e.preventDefault();
@@ -83,7 +93,6 @@ class FlakeyCard extends React.Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        
         
 
         //handle the date and time inputs to convert to dateExpires format
@@ -132,16 +141,22 @@ class FlakeyCard extends React.Component {
     
 
     render() {
+        let {editMode, isOwner, fullDisplayMode, isNew} = this.props;
 
         const {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete} = this.state.flakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
 
-        let {editMode, isOwner, fullDisplayMode, isNew} = this.state;
+        const uneditedFlakey = this.props.flakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
+
+        
 
         /* TODO: remove */
         // editMode = true;
         // isOwner = true;
         // isNew = true;
         // fullDisplayMode = true;
+        // console.log(editMode);
+
+        console.log("Flakeycard", this.props.editMode);
 
         const date= this.state.date;
         const time= this.state.time;
@@ -162,7 +177,7 @@ class FlakeyCard extends React.Component {
                         Flakey Title:
                         <input type="text" name="title" onChange={handleChange} value={title} />
                     </label>
-                : <h3>{title}</h3>}
+                : <h3>{uneditedFlakey.title}</h3>}
 
                 <p>Event Name: 
                 { (editMode && isOwner) ? (
@@ -171,7 +186,7 @@ class FlakeyCard extends React.Component {
                         <input type="text" name="event" onChange={handleChange} value={event} />
                     </label>
                     ) : ( 
-                    <span>{event}</span>)}
+                    <span>{uneditedFlakey.event}</span>)}
                 </p>
 
                 <p>This Flakey Expires On: 
@@ -187,7 +202,7 @@ class FlakeyCard extends React.Component {
                         </label>
                     </span>
                 ) : (
-                    <span>{dateExpiresFormatted}</span>)}
+                    <span>{uneditedFlakey.dateExpiresFormatted}</span>)}
                 </p>
 
                 <p>Punishment: 
@@ -197,7 +212,7 @@ class FlakeyCard extends React.Component {
                         <input type="text" name="amount" onChange={handleChange} value={amount} />
                     </label>
                 ) : (
-                    <span>${Math.round(amount * 100) / 100}</span>)}
+                    <span>${Math.round(uneditedFlakey.amount * 100) / 100}</span>)}
                 
                 </p>
 
@@ -208,7 +223,7 @@ class FlakeyCard extends React.Component {
                         <textarea name="description" onChange={handleChange} value={description} />
                     </label>   
                 ) : (
-                    <p>{description}</p>)}
+                    <p>{uneditedFlakey.description}</p>)}
 
                 <p>Created by: <span>{owner.name}</span></p>
                 <p>Created On: <span>{dateCreatedFormatted}</span></p>
@@ -226,7 +241,7 @@ class FlakeyCard extends React.Component {
                             handleChange={this.handleChange} />
                     : 
                         <ul>
-                            {members.map( (member) => {
+                            {uneditedFlakey.members.map( (member) => {
                                 return (
                                     <li key={member.uid}>{member.name}</li>
                                 );

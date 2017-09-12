@@ -124,6 +124,7 @@ class App extends React.Component {
             flakeys: [],
             focusedFlakey: {id: ''},
             flakeyForm: {},
+            editFlakeyMode: false,
         };
 
         this.handleUserSubscription = this.handleUserSubscription.bind(this);
@@ -136,7 +137,24 @@ class App extends React.Component {
         this.handleFlakeyChange = this.handleFlakeyChange.bind(this);
         this.handleFlakeySubmit = this.handleFlakeySubmit.bind(this);
 
+        this.handleCreateNewFlakey = this.handleCreateNewFlakey.bind(this);
+        // this.handleEditFlakey = this.handleEditFlakey.bind(this);
 
+
+    }
+
+    handleCreateNewFlakey(e) {
+        e.preventDefault();
+        
+    }
+
+    // handleEditFlakey(e) {
+    //     e.preventDefault();
+    //     toggleEditFlakeyMode();
+    // }
+
+    toggleEditFlakeyMode() {
+        this.setState({ editFlakeyMode: !this.state.editFlakeyMode });
     }
 
     handleFlakeySelection(flakeyId) {
@@ -356,7 +374,9 @@ class App extends React.Component {
 
         return (
             <div>
-                <Header userName={this.state.user.name} {...this.header} />
+                <Header user={this.state.user} 
+                        handleCreateNewFlakey={this.handleCreateNewFlakey}
+                        {...this.header} />
                 <Router>
                     <Switch>
                         <Route exact path="/flakeys" render={props => <FlakeysView {...flakeysViewProps} />} />
