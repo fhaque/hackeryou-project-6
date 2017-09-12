@@ -23,7 +23,6 @@ const services = {
 // }; 
 
 services.getUserByUid = function(uid) {
-    console.log("Loggin user to grab data of: ",uid);
     const dbUser = firebase.database().ref(`users/${uid}`);
     // const dbUser = dbUsersRef.child(uid);
     return dbUser.once('value').then( snapshot => snapshot.val() );
@@ -31,8 +30,6 @@ services.getUserByUid = function(uid) {
 
 services.getUsersByUid = function(uids) {
     let promises = [];
-
-    console.log(uids);
 
     if ( Array.isArray(uids) ) { //if Array
         promises = uids.map( (uid) => {
@@ -188,12 +185,14 @@ services.validateAndCorrectFlakey = function(flakeyObj) {
     //best solution is to create a Set
 
     //validate flakedMembers exist in members. If it doesn't, delete it.
-    for (let flakedMember in flakeyObj.flakedMembers) {
-        if ( !(flakedMember in flakeyObj.members) ) {
-            delete flakeyObj.flakedMembers[flakedMember];
-        }
-    }
+    // for (let flakedMember in flakeyObj.flakedMembers) {
+        
+    //     if ( !(flakedMember in flakeyObj.members) ) {
+    //         delete flakeyObj.flakedMembers[flakedMember];
+    //     }
+    // }
 
+    console.log(flakeyObj);
 }
 
 services.userCommitToFlakey = function(uid, flakeyid) {
@@ -206,7 +205,9 @@ services.userCommitToFlakey = function(uid, flakeyid) {
 }
 
 services.updateFlakey = function(flakeyObj) {
-    services.validateAndCorrectFlakey(flakeyObj);
+    // services.validateAndCorrectFlakey(flakeyObj);
+
+    console.log('Services: validated flakey:', flakeyObj);
 
     return dbFlakeysRef.child(flakeyObj.id).set(flakeyObj)
         .then( () => true )

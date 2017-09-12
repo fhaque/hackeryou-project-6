@@ -147,19 +147,19 @@ class App extends React.Component {
     }
 
     handleFlakeySubmit(e, flakey) {
-        e.preventDefault(e);
-        //TODO: code.
-        console.log('Flakey handleSubmit triggered. Needs code.', e, flakey);
+        e.preventDefault();
 
         //transform data for Firebase DB
         const dbFlakey = this.flakeyToDbFlakey(flakey);
+
+        console.log(flakey);
+        console.log("Sending flakeyobj to services:",dbFlakey);
 
         services.updateFlakey(dbFlakey);
     }
 
     handleFlakeyChange(e) {
         e.preventDefault();
-        console.log('logged changes.');
         const focusedFlakey = this.state.focusedFlakey;
 
         console.log(e.target.value);
@@ -190,7 +190,6 @@ class App extends React.Component {
             services.subscribeToFlakey(flakeyId, this.handleFlakeySubscription);
         });
 
-        
 
         this.setState({ user });
 
@@ -211,27 +210,28 @@ class App extends React.Component {
     }
 
     flakeyToDbFlakey(flakey) {
-        flakey = Object.assign({}, flakey);
+        const newflakey = Object.assign({}, flakey);
 
         //convert owner object to title
-        flakey.owner = flakey.owner.uid;
+        newflakey.owner = newflakey.owner.uid;
 
         //convert member property array to member property object
         const members = {};
-        flakey.members.forEach( (member) => {
+        newflakey.members.forEach( (member) => {
             members[member.uid] = true;
         });
-        flakey.members = members;
+        newflakey.members = members;
 
         //convert flakedMembers
         const flakedMembers = {};
         if ('flakedMembers' in flakey) {
-            flakey.flakedMembers.forEach( (flakedMember) => {
+            newflakey.flakedMembers.forEach( (flakedMember) => {
                 flakedMembers[flakedMember.uid] = true;
             });
         }
+        newflakey.flakedMembers = flakedMembers;
 
-        return flakey;
+        return newflakey;
 
     }
 
@@ -248,8 +248,6 @@ class App extends React.Component {
         for (let uid in flakey.members) {
             userids.push(uid);
         }
-
-        console.log("Flakey user ID: ",userids);
 
         return services.getUsersByUid(userids)
             .then( userArray => {
@@ -272,7 +270,7 @@ class App extends React.Component {
                     const flakedMembersArray = [];
                     flakey.members.map( member => {
                         if (member.uid in flakey.flakedMembers) {
-                            flakedMembersArray.push(flakey);
+                            flakedMembersArray.push(member);
                         }
                     });
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 
+import FlakeyMemberChecklist from './FlakeyMemberChecklist';
+
 //Flakey card view modes: small view, large view
 //Flakey card function modes: view, edit
 //Flakey user states: member, owner
@@ -18,14 +20,26 @@ class FlakeyCard extends React.Component {
             //form specific inputs
             date: null,
             time: null,
+            membersToRemove: [],
+            membersToFlakedMembers: [],
 
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
 
     }
 
     componentDidMount() {
+
+        //initialize membersToFlakedMembers for checklist
+        const membersToFlakedMembers = [];
+
+        if ('flakedMembers' in this.props.flakey) {
+            this.props.flakey.flakedMembers.forEach( (member) => {
+                membersToFlakedMembers.push(member.uid);
+            });
+        }
 
         this.setState({ 
             flakey: Object.assign({}, this.props.flakey),
@@ -34,39 +48,90 @@ class FlakeyCard extends React.Component {
             editMode: this.props.editMode || false,
             date: moment(this.props.flakey.dateExpires).format('YYYY-MM-DD'),
             time: moment(this.props.flakey.dateExpires).format('HH:mm'),
+            membersToFlakedMembers: membersToFlakedMembers,
         });
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+
+        let flakey = Object.assign({}, this.state.flakey);
+
+        //remove members that were selected for removal by user
+        flakey.members = flakey.members.filter( (member) => {
+            return !this.state.membersToRemove.includes(member.uid);
+        });
+
+
+        flakey.flakedMembers = flakey.members.filter( (member) => {
+            return this.state.membersToFlakedMembers.includes(member.uid);
+        });
+
+        // console.log(flakey);
+
+        this.setState({ flakey });
+
+        this.props.handleSubmit(e, flakey);
     }
 
     handleChange(e) {
         //TODO: code
-        const flakey = this.state.flakey;
+        const flakey = Object.assign({},this.state.flakey);
+        const target = e.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        
+        
 
         //handle the date and time inputs to convert to dateExpires format
-        if (e.target.name === 'date' || e.target.name === 'time') {
-            this.setState({ [e.target.name]: e.target.value });
+        if (name === 'date' || name === 'time') {
+            this.setState({ [name]: value });
 
             let dateExpires = 0;
 
-            if (e.target.name === 'date') {
-                dateExpires = moment( e.target.value + 'T' + this.state.time).valueOf();
-            } else if (e.target.name === 'time') {
-                dateExpires = moment( this.state.date + 'T' + e.target.value).valueOf();
+            if (name === 'date') {
+                dateExpires = moment( value + 'T' + this.state.time).valueOf();
+            } else if (name === 'time') {
+                dateExpires = moment( this.state.date + 'T' + value).valueOf();
             }
 
             flakey['dateExpires'] = dateExpires;
 
+        } else if (target.type === 'checkbox') { //from FlakeyMemberChecklist
+            const membersToFlakedMembers = this.state.membersToFlakedMembers;
+            const membersToRemove = this.state.membersToRemove;
+
+            const [checkboxName, checkboxId] = name.split('__');
+            //update the members checklist state
+            if (checkboxName === 'remove') {
+                
+                (value) ? membersToRemove.push(checkboxId) : this.removeFromArray(membersToRemove, checkboxId);
+            } else if (checkboxName === 'flaked') {
+                (value) ? membersToFlakedMembers.push(checkboxId) : this.removeFromArray(membersToFlakedMembers, checkboxId);
+            }
+
+            // console.log(membersToFlakedMembers, membersToRemove);
+
+            this.setState({ membersToFlakedMembers, membersToRemove })
         } else {
-            flakey[e.target.name] = e.target.value;
+            flakey[name] = value;
         }
 
         this.setState({ flakey });
-
     } 
+
+    removeFromArray(array, val) {
+        const index = array.indexOf(val);
+        if (index > -1) {
+            array.splice(index, 1);
+        }
+    }
     
 
     render() {
 
-        const {title, event, amount, dateCreated, dateExpires, owner, members, description} = this.state.flakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], description: ''};
+        const {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete} = this.state.flakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
 
         let {editMode, isOwner, fullDisplayMode, isNew} = this.state;
 
@@ -84,11 +149,11 @@ class FlakeyCard extends React.Component {
         /* ***** */
 
         const handleChange = this.handleChange;
-        const handleSubmit = this.props.handleSubmit;
+        // const handleSubmit = this.props.handleSubmit;
         const handleClick = this.props.handleClick;
 
         return (
-            <div className="FlakeyCard" onClick={handleClick} onSubmit={(e) => handleSubmit(e, this.state.flakey)}>
+            <div className="FlakeyCard" onClick={handleClick} onSubmit={this.handleSubmit}>
                 <form>
                 { (editMode && isOwner) ?
                     <label>
@@ -146,13 +211,27 @@ class FlakeyCard extends React.Component {
                 <p>Created by: <span>{owner.name}</span></p>
                 <p>Created On: <span>{dateCreatedFormatted}</span></p>
                 {fullDisplayMode && <p>Potential Flakers:</p>}
-                {fullDisplayMode && <ul>
-                    {members.map( (member) => {
-                        return (
-                            <li key={member.uid}>{member.name}</li>
-                        );
-                    })}
-                </ul>}
+                {fullDisplayMode &&
+                    ((isOwner && editMode && !complete) ? 
+                        <FlakeyMemberChecklist 
+                            members={members}
+                            owner={owner}
+                            membersToFlakedMembers={this.state.membersToFlakedMembers}
+                            membersToRemove={this.state.membersToRemove}
+                            expired={expired}
+                            complete={complete}
+                            flakedMembers={flakedMembers}
+                            handleChange={this.handleChange} />
+                    : 
+                        <ul>
+                            {members.map( (member) => {
+                                return (
+                                    <li key={member.uid}>{member.name}</li>
+                                );
+                            })}
+                        </ul>
+                    )
+                }
                 
                 {isOwner && <button>Save & Commit to Flakey</button>}
                 {!isOwner && <button>Commit to Flakey</button>}
