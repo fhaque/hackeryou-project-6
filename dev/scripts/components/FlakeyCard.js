@@ -46,6 +46,7 @@ class FlakeyCard extends React.Component {
             isNew: this.props.isNew || false,
             isOwner: this.props.isOwner || false,
             editMode: this.props.editMode || false,
+            fullDisplayMode: this.props.fullDisplayMode || false,
             date: moment(this.props.flakey.dateExpires).format('YYYY-MM-DD'),
             time: moment(this.props.flakey.dateExpires).format('HH:mm'),
             membersToFlakedMembers: membersToFlakedMembers,
@@ -136,10 +137,10 @@ class FlakeyCard extends React.Component {
         let {editMode, isOwner, fullDisplayMode, isNew} = this.state;
 
         /* TODO: remove */
-        editMode = true;
-        isOwner = true;
-        isNew = true;
-        fullDisplayMode = true;
+        // editMode = true;
+        // isOwner = true;
+        // isNew = true;
+        // fullDisplayMode = true;
 
         const date= this.state.date;
         const time= this.state.time;
@@ -148,9 +149,9 @@ class FlakeyCard extends React.Component {
 
         /* ***** */
 
-        const handleChange = this.handleChange;
+        const handleChange = this.handleChange || null;
         // const handleSubmit = this.props.handleSubmit;
-        const handleClick = this.props.handleClick;
+        const handleClick = this.props.handleClick || null;
 
         return (
             <div className="FlakeyCard" onClick={handleClick} onSubmit={this.handleSubmit}>

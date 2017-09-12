@@ -1,7 +1,8 @@
 import      React                       from 'react';
 import      ReactDOM                    from 'react-dom';
 import  { 
-            BrowserRouter as Router, 
+            BrowserRouter as Router,
+            Switch, 
             Route, 
             Link 
         }                               from 'react-router-dom';
@@ -11,10 +12,11 @@ import      firebase                    from './firebase';
 import      services                    from './services';
 
 import      Header                      from './components/Header';
-import      FlakeyCard                  from './components/FlakeyCard';
+// import      FlakeyCard                  from './components/FlakeyCard';
 import      FlakeysView                 from './FlakeysView';
-import      CreateFlakeyView            from './CreateFlakeyView';
-import      EditFlakeyView              from './EditFlakeyView';
+import      FlakeyCardView              from './FlakeyCardView.js'
+// import      CreateFlakeyView            from './CreateFlakeyView';
+// import      EditFlakeyView              from './EditFlakeyView';
 
 const dbUsersRef = firebase.database().ref('users/');
 const dbFlakeysRef = firebase.database().ref('flakeys/');
@@ -294,6 +296,8 @@ class App extends React.Component {
     componentDidMount() {
         services.subscribeToUser('-KtgPURrKqTSpsRVEO3F', this.handleUserSubscription);
 
+
+
         // services.createFlakey('-KtgPURrKqTSpsRVEO3F');
 
 
@@ -338,16 +342,45 @@ class App extends React.Component {
             flakeys.push(this.state.flakeys[key]);
         }
 
+        const flakeysViewProps = {
+            user: this.state.user,
+            flakeys: flakeys,
+            focusedFlakey: this.state.focusedFlakey,
+            handleFlakeyChange: this.handleFlakeyChange,
+            handleFlakeySelection: this.handleFlakeySelection,
+            handleFlakeySubmit: this.handleFlakeySubmit
+        };
+
+        const flakeyCardViewProps = {
+            user: this.state.user,
+            handleFlakeyChange: this.handleFlakeyChange,
+            handleFlakeySubmit: this.handleFlakeySubmit
+        };
+
         return (
             <div>
                 <Header userName={this.state.user.name} {...this.header} />
-
-                <FlakeysView user={this.state.user} 
+                <Router>
+                    <Switch>
+                        <Route exact path="/flakeys" render={props => <FlakeysView {...flakeysViewProps} />} />
+                        
+                        <Route path="/flakeys/:flakeyId" render={props => <FlakeyCardView {...props} {...flakeyCardViewProps} />} />
+                    </Switch>
+                </Router>
+                {/*<FlakeysView user={this.state.user} 
                             flakeys={flakeys}
                             focusedFlakey={this.state.focusedFlakey}
                             handleFlakeySelection={this.handleFlakeySelection}
                             handleFlakeyChange={this.handleFlakeyChange}
-                            handleFlakeySubmit={this.handleFlakeySubmit}/>
+                            handleFlakeySubmit={this.handleFlakeySubmit}/> */}
+
+
+
+
+
+
+
+
                 {/*<CreateFlakeyView   handleSubmit={this.handleCreateFlakeySubmit}
                                     handleCancel={this.handleCreateFlakeyCancel}handleChange={this.handleCreateFlakeyChange}formVals={this.state.createFlakeyVals}/>*/}
                 {/*<EditFlakeyView handleSubmit={this.handleEditFlakeySubmit}
