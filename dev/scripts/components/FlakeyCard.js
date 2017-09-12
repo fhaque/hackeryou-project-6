@@ -151,16 +151,24 @@ class FlakeyCard extends React.Component {
         }
     }
     
+    isEmpty(obj) {
+        return Object.keys(obj).length === 0 && obj.constructor === Object
+    }
 
     render() {
         let {editMode, isOwner, fullDisplayMode, isNew} = this.props;
 
         const {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete} = this.state.flakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
 
-        const uneditedFlakey = this.props.uneditedFlakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
+        const uneditedFlakey = (!this.isEmpty(this.state.uneditedFlakey)) ?
+            this.state.uneditedFlakey
+        : 
+        {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
 
         //TODO: deprecate this
         isNew = (this.state.uneditedFlakey.dateExpires === 0);
+
+        console.log('From FlakeyCard', uneditedFlakey);
 
         /* TODO: remove */
         // editMode = true;

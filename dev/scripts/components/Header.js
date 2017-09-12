@@ -8,8 +8,6 @@ const Header = function(props) {
 
     const {handleCreateNewFlakey, handleEditFlakey} = props;
 
-    console.log("From header", props);
-
 
     return (
         <header className="Header">

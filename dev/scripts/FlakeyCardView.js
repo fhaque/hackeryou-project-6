@@ -70,13 +70,16 @@ class FlakeyCardView extends React.Component {
 
     render() {
         const user = this.props.user;
-        const flakey = this.state.flakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
+        const flakey = this.state.flakey; //|| {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
 
         const { isNew, editMode } = this.state;
         
+        let isOwner;
+        if (flakey !== null) {
+           isOwner = (user.uid === (flakey.owner.uid));
+        }
 
-        const isOwner = (user.uid === flakey.owner.uid);
-        
+        console.log('From FlakeyCardView', flakey);
 
         return (
             <div>

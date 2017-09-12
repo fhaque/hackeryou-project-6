@@ -161,12 +161,12 @@ class App extends React.Component {
         this.setState({ editFlakeyMode: !this.state.editFlakeyMode });
     }
 
-    handleFlakeySelection(flakeyId) {
+    handleFlakeySelection(e, flakeyId, history) {
         if(this.state.focusedFlakey.id !== flakeyId) {
-            console.log('focusedFlakey reset.');
             this.setState({ 
                 focusedFlakey: this.state.flakeys[flakeyId],
             });
+            history.push(`/flakeys/${flakeyId}`);
         }
     }
 
@@ -227,8 +227,6 @@ class App extends React.Component {
                     const flakeys = Object.assign({}, this.state.flakeys);
 
                     flakeys[flakey.id] = flakey;
-
-                    console.log('From Flakeys Subscription handle: ', flakey);
 
                     this.setState({ flakeys });
                 });
@@ -388,7 +386,7 @@ class App extends React.Component {
                     <Route path="/" render={props => <Header {...props} {...headerProps}
                         {...this.header} />} />
                     <Switch>
-                        <Route exact path="/flakeys" render={props => <FlakeysView {...flakeysViewProps} />} />
+                        <Route exact path="/flakeys" render={props => <FlakeysView {...props} {...flakeysViewProps} />} />
                         
                         <Route exact path="/flakeys/:flakeyId" render={props => <FlakeyCardView {...props} {...flakeyCardViewProps} />} />
                     </Switch>

@@ -13,7 +13,7 @@ class FlakeysView extends React.Component {
                     return(
                          <FlakeyCard key={flakey.id}
                             isOwner={user.uid === flakey.owner.uid}
-                            handleClick={()=> this.props.handleFlakeySelection(flakey.id)}
+                            handleClick={(e)=> this.props.handleFlakeySelection(e, flakey.id, this.props.history)}
                             flakey={flakey}
                         />
 

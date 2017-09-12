@@ -206,8 +206,6 @@ services.dbFlakeyToFlakey = function(flakeyObj) {
         userids.push(uid);
     }
 
-    console.log("Flakey being converted:", flakey, userids)
-
     return services.getUsersByUid(userids)
         .then( userArray => {
             flakey.owner = {
