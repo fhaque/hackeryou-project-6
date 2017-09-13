@@ -218,7 +218,7 @@ class App extends React.Component {
         e.preventDefault();
 
         services.createFlakey(this.state.user.uid)
-        .then( flakeyId => history.push(`/flakeys/${flakeyId}`) );
+        .then( flakeyId => history.push(`/flakeys/${flakeyId}`) )
     }
 
     // handleEditFlakey(e) {

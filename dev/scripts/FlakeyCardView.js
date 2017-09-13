@@ -35,6 +35,21 @@ class FlakeyCardView extends React.Component {
         });
     }
 
+    componentWillReceiveProps(nextProps) {
+        const flakeyId = nextProps.match.params.flakeyId;
+
+        services.getFlakey(flakeyId)
+        .then( flakeyObj => {
+            return services.dbFlakeyToFlakey(flakeyObj);
+        })
+        .then(flakey => {
+            services.subscribeToFlakey(flakeyId, this.handleFlakeySubscription);
+            this.setState({ flakey });
+        });
+
+
+    }
+
     handleCommitToFlakey(e) {
         e.preventDefault();
 

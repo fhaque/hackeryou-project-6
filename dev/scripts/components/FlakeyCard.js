@@ -158,9 +158,9 @@ class FlakeyCard extends React.Component {
     render() {
         let {editMode, isOwner, fullDisplayMode, isNew, memberFlaked} = this.props;
 
-        // const {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete, id} = this.state.flakey 
-        // || 
-        // {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false, id: ''};
+        let {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete, id} = this.state.flakey 
+        || 
+        {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false, id: ''};
 
         const uneditedFlakey = (!this.isEmpty(this.state.uneditedFlakey)) ?
             this.state.uneditedFlakey
@@ -168,7 +168,7 @@ class FlakeyCard extends React.Component {
         {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false, id:''};
 
 
-        const {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete, id} = uneditedFlakey;
+        
 
 
         //TODO: deprecate this
