@@ -178,6 +178,12 @@ class App extends React.Component {
     handleFlakeySubmit(e, flakey) {
         e.preventDefault();
 
+        //put Flakey to complete if already expired since owner
+        //making commitment.
+        if (flakey.expired) {
+            flakey.complete = true;
+        }
+
         //transform data for Firebase DB
         const dbFlakey = services.flakeyToDbFlakey(flakey);
 

@@ -14,7 +14,7 @@ class FlakeyMemberChecklist extends React.Component {
 
         return (
             <div>
-                {(!expired && !complete) &&
+                {(!complete) &&
                     <table>
                         <thead>
                             <tr>

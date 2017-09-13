@@ -91,6 +91,11 @@ class FlakeyCardView extends React.Component {
            isOwner = (user.uid === (flakey.owner.uid));
         }
 
+        let memberFlaked = false;
+        if ('flakedMembers' in flakey) {
+            memberFlaked = flakey.flakedMembers.includes(user.uid);
+        }
+
         console.log('From FlakeyCardView', flakey);
 
         return (
@@ -103,6 +108,7 @@ class FlakeyCardView extends React.Component {
                             isOwner={isOwner}
                             isNew={isNew}
                             editMode={editMode}
+                            memberFlaked={memberFlaked}
                             fullDisplayMode={true}
                             handleSubmit={this.handleSubmit}
                             handleCommitToFlakey={this.handleCommitToFlakey}

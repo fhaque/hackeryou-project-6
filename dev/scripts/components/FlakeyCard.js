@@ -156,7 +156,7 @@ class FlakeyCard extends React.Component {
     }
 
     render() {
-        let {editMode, isOwner, fullDisplayMode, isNew} = this.props;
+        let {editMode, isOwner, fullDisplayMode, isNew, memberFlaked} = this.props;
 
         const {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete, id} = this.state.flakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false, id: ''};
 
@@ -167,6 +167,8 @@ class FlakeyCard extends React.Component {
 
         //TODO: deprecate this
         isNew = (this.state.uneditedFlakey.dateExpires === 0);
+
+        
 
         /* TODO: remove */
         // editMode = true;
@@ -190,6 +192,8 @@ class FlakeyCard extends React.Component {
 
         return (
             <div className="FlakeyCard" onClick={handleClick} onSubmit={this.handleSubmit}>
+                {expired && <p>Flakey's Time is Up!</p>}
+                {(expired && complete && memberFlaked) && <p>You're a Flaker!!!</p>}
                 <form>
                 { (editMode && isOwner) ?
                     <label>
@@ -282,10 +286,11 @@ class FlakeyCard extends React.Component {
                     </ul>
                 }
                 
-                {(fullDisplayMode && isOwner) && <button>Save & Commit to Flakey</button>}
+                {(fullDisplayMode && isOwner && !expired) && <button>Save Flakey</button>}
+                {(fullDisplayMode && isOwner && expired && !complete) && <button>Lock Flakey</button>}
                 
             </form>
-            {(fullDisplayMode && !isOwner) && <button onClick={handleCommitToFlakey}>Commit to Flakey</button>}
+            {(fullDisplayMode && !isOwner && !expired) && <button onClick={handleCommitToFlakey}>Commit to Flakey</button>}
             {(fullDisplayMode && isOwner) && <button>Delete</button>}
             </div>
         ); 
