@@ -6,7 +6,7 @@ const Header = function(props) {
     const {user, title, editFlakeyMode} = props;
     const userName = user.name;
 
-    const {handleCreateNewFlakey, handleEditFlakey} = props;
+    const {handleCreateNewFlakey, handleToFlakeysView} = props;
 
 
     return (
@@ -19,6 +19,8 @@ const Header = function(props) {
                 <button className="Header_btn Header__editBtn" onClick={handleEditFlakey}>Edit Flakey</button>
             */}
             
+            <button onClick={(e) => handleToFlakeysView(e, props.history)}>See My Flakeys</button>
+
             <LoggedInUserIndicator userName={userName} className="Header__loggedInUserIndicator" />
         </header>
     );

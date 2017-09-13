@@ -138,15 +138,20 @@ class App extends React.Component {
         this.handleFlakeySubmit = this.handleFlakeySubmit.bind(this);
 
         this.handleCreateNewFlakey = this.handleCreateNewFlakey.bind(this);
+        this.handleToFlakeysView = this.handleToFlakeysView.bind(this);
         // this.handleEditFlakey = this.handleEditFlakey.bind(this);
 
 
     }
 
-    handleCreateNewFlakey(e,history) {
+    handleToFlakeysView(e, history) {
         e.preventDefault();
 
         history.push('/flakeys/');
+    }
+
+    handleCreateNewFlakey(e, history) {
+        e.preventDefault();
 
         services.createFlakey(this.state.user.uid)
         .then( flakeyId => history.push(`/flakeys/${flakeyId}`) );
@@ -377,6 +382,7 @@ class App extends React.Component {
         const headerProps = {
             user: this.state.user,
             handleCreateNewFlakey: this.handleCreateNewFlakey,
+            handleToFlakeysView: this.handleToFlakeysView,
         }
 
         return (
