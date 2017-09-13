@@ -26,7 +26,7 @@ class AddFlakeyKeyBar extends React.Component {
     render() {
 
         return (
-            <form className="AddFlakeyBar" onSubmit={(e) => this.props.handleSubmit(e, this.state.flakeyId)}>
+            <form className="AddFlakeyKeyBar" onSubmit={(e) => this.props.handleSubmit(e, this.state.flakeyId)}>
                 <input type="text" name="flakeyId" value={this.state.flakeyId} onChange={this.handleChange} placeholder="Enter shared Flakey key." />
                 <input type="submit" value="View Flakey" />
             </form>

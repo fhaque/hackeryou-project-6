@@ -13,7 +13,7 @@ class FlakeyMemberChecklist extends React.Component {
         const handleChange = this.props.handleChange;
 
         return (
-            <div>
+            <div className="FlakeyMemberChecklist">
                 {(!complete) &&
                     <table>
                         <thead>
