@@ -55,11 +55,21 @@ services.createUserObj = function() {
 }
 
 services.dbUserToUser = function(userObj) {
-    return userObj;
+
+    return Object.assign({}, userObj);
 }
 
 services.userToDbUser = function(user) {
-    return user;
+    const flakeyIds = {};
+    for(let key in user.flakeyIds) {
+        flakeyIds[ user.flakeyIds[key] ] = true;
+    }
+
+    const userObj = Object.assign({}, user);
+
+    userObj.flakeyIds = flakeyIds;
+
+    return userObj;
 }
 
 services.saveNewUser = function(uid, userObj) {
@@ -75,7 +85,11 @@ services.saveNewUser = function(uid, userObj) {
 
 services.updateUser = function(userObj) {
 
-    return dbUsersRef.child(userObj.uid).set(userObj)
+    const user = services.userToDbUser(userObj);
+
+    console.log("update user:", user);
+
+    return dbUsersRef.child(user.uid).set(user)
         .then( () => true )
         .catch( err => {
             console.log('Services: failed to update User.');
@@ -287,17 +301,17 @@ services.validateAndCorrectFlakey = function(flakeyObj) {
     console.log(flakeyObj);
 }
 
-services.userCommitToFlakey = function(uid, flakeyid) {
-    return dbFlakeysRef.child(`${flakeyid}/members/${uid}`).set(true)
-        .then( () => true )
-        .catch( err => {
-            console.log('Services: failed to save Flakey');
-            return err;
-        });
-}
+// services.userCommitToFlakey = function(uid, flakeyid) {
+//     return dbFlakeysRef.child(`${flakeyid}/members/${uid}`).set(true)
+//         .then( () => true )
+//         .catch( err => {
+//             console.log('Services: failed to save Flakey');
+//             return err;
+//         });
+// }
 
 services.addFlakeyToUser = function(uid, flakeyid) {
-    return dbUsersRef.child(uid).child('flakeyid').update({[flakeyid]: true})
+    return dbUsersRef.child(uid).child('flakeyIds').update({[flakeyid]: true})
     .then( () => {
         return dbFlakeysRef.child(flakeyid).child('members').update({[uid]: true});
     })
@@ -305,7 +319,7 @@ services.addFlakeyToUser = function(uid, flakeyid) {
     .catch( err => {
         console.log('Services: failed to add Flakey to User.');
         return err;
-    });;
+    });
 }
 
 //TODO: seperate out the user update from the flakey update.

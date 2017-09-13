@@ -200,11 +200,12 @@ class App extends React.Component {
 
     handleUserSubscription(userObj) {
         const user = services.dbUserToUser(userObj);
-        console.log('From User Subscription handle: ', user);
 
         //unsubscribe to old flakeys
         this.state.user.flakeyIds.map( (flakeyId) => {
+            //unsubscribe to old flakeys
             services.unsubscribeToFlakey(flakeyId);
+            
         });
 
         //convert flakeyIds object to an array
@@ -226,15 +227,26 @@ class App extends React.Component {
 
     handleFlakeySubscription(flakeyObj) {
         if(flakeyObj) {
+            console.log(flakeyObj);
 
-            services.dbFlakeyToFlakey(flakeyObj)
-                .then( flakey => {
-                    const flakeys = Object.assign({}, this.state.flakeys);
+            //check if member of that flakey
+            if(this.state.user.uid in flakeyObj.members) {
+            
+                services.dbFlakeyToFlakey(flakeyObj)
+                    .then( flakey => {
+                        const flakeys = Object.assign({}, this.state.flakeys);
 
-                    flakeys[flakey.id] = flakey;
+                        flakeys[flakey.id] = flakey;
 
-                    this.setState({ flakeys });
-                });
+                        this.setState({ flakeys });
+                    });
+            } else {
+                const user = Object.assign({}, this.state.user);
+
+                delete user[flakeyObj.id];
+
+                services.updateUser(user);
+            }
         }
     }
 
@@ -316,9 +328,11 @@ class App extends React.Component {
 
 
     componentDidMount() {
+        //Bob
         services.subscribeToUser('-Ktcn3Bh5w7mZRZKwqwE', this.handleUserSubscription);
 
-//'-KtgPURrKqTSpsRVEO3F'
+        //Sally
+        // services.subscribeToUser('-KtgPURrKqTSpsRVEO3F', this.handleUserSubscription);
 
         // services.createFlakey('-KtgPURrKqTSpsRVEO3F');
 

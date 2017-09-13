@@ -4,6 +4,7 @@ import      ReactDOM                    from 'react-dom';
 import FlakeyCard from './components/FlakeyCard';
 
 class FlakeysView extends React.Component {
+
     render() {
         const user = this.props.user;
 

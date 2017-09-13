@@ -19,6 +19,7 @@ class FlakeyCardView extends React.Component {
         this.toggleEditMode = this.toggleEditMode.bind(this);
 
         this.handleFlakeySubscription = this.handleFlakeySubscription.bind(this);
+        this.handleCommitToFlakey = this.handleCommitToFlakey.bind(this);
     }
 
     componentDidMount() {
@@ -32,6 +33,17 @@ class FlakeyCardView extends React.Component {
             services.subscribeToFlakey(flakeyId, this.handleFlakeySubscription);
             this.setState({ flakey });
         });
+    }
+
+    handleCommitToFlakey(e) {
+        e.preventDefault();
+
+        const uid = this.props.user.uid;
+        const flakeyId = this.state.flakey.id;
+
+        services.addFlakeyToUser(uid, flakeyId);
+
+        console.log("Clicked Commit to Flakey", uid, flakeyId);
     }
 
     handleFlakeySubscription(flakeyObj) {
@@ -93,6 +105,7 @@ class FlakeyCardView extends React.Component {
                             editMode={editMode}
                             fullDisplayMode={true}
                             handleSubmit={this.handleSubmit}
+                            handleCommitToFlakey={this.handleCommitToFlakey}
                             flakey={flakey}
                     />
                 ) : (

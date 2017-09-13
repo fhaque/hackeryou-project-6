@@ -158,17 +158,15 @@ class FlakeyCard extends React.Component {
     render() {
         let {editMode, isOwner, fullDisplayMode, isNew} = this.props;
 
-        const {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete} = this.state.flakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
+        const {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete, id} = this.state.flakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false, id: ''};
 
         const uneditedFlakey = (!this.isEmpty(this.state.uneditedFlakey)) ?
             this.state.uneditedFlakey
         : 
-        {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
+        {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false, id:''};
 
         //TODO: deprecate this
         isNew = (this.state.uneditedFlakey.dateExpires === 0);
-
-        console.log('From FlakeyCard', uneditedFlakey);
 
         /* TODO: remove */
         // editMode = true;
@@ -187,6 +185,8 @@ class FlakeyCard extends React.Component {
         const handleChange = this.handleChange || null;
         // const handleSubmit = this.props.handleSubmit;
         const handleClick = this.props.handleClick || null;
+
+        const handleCommitToFlakey = this.props.handleCommitToFlakey || null;
 
         return (
             <div className="FlakeyCard" onClick={handleClick} onSubmit={this.handleSubmit}>
@@ -208,6 +208,8 @@ class FlakeyCard extends React.Component {
                     <span>{uneditedFlakey.event}</span>)}
                 </p>
 
+                <p>Share Key to Others: {id}</p>
+
                 <p>This Flakey Expires On: 
                 { (isNew && editMode && isOwner) ? (
                     <span>
@@ -228,7 +230,7 @@ class FlakeyCard extends React.Component {
                 { (isNew && editMode && isOwner) ? (
                     <label>
                         <span style={{display:'none'}}>Punishment amount:</span>
-                        <input type="text" name="amount" onChange={handleChange} value={amount} />
+                        <input type="text" name="amount" onChange={handleChange} value={Number(amount)} />
                     </label>
                 ) : (
                     <span>${Math.round(uneditedFlakey.amount * 100) / 100}</span>)}
@@ -280,10 +282,11 @@ class FlakeyCard extends React.Component {
                     </ul>
                 }
                 
-                {isOwner && <button>Save & Commit to Flakey</button>}
-                {!isOwner && <button>Commit to Flakey</button>}
+                {(fullDisplayMode && isOwner) && <button>Save & Commit to Flakey</button>}
+                
             </form>
-            {isOwner && <button>Delete</button>}
+            {(fullDisplayMode && !isOwner) && <button onClick={handleCommitToFlakey}>Commit to Flakey</button>}
+            {(fullDisplayMode && isOwner) && <button>Delete</button>}
             </div>
         ); 
 
