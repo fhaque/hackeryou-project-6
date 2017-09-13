@@ -25,7 +25,7 @@ const services = {
 services.getUserByUid = function(uid) {
     const dbUser = firebase.database().ref(`users/${uid}`);
     // const dbUser = dbUsersRef.child(uid);
-    return dbUser.once('value').then( snapshot => snapshot.val() );
+    return dbUser.once('value').then( snapshot => snapshot.val() || null );
 };
 
 services.getUsersByUid = function(uids) {
@@ -49,6 +49,7 @@ services.createUserObj = function() {
     return {
         name: '',
         email: '',
+        photoURL: '',
         flakeyIds: [''],
         uid: '',
     }
@@ -152,9 +153,9 @@ services.createFlakeyObj = function(flakeyVals) {
 
     const newFlakeyObj = {
         owner: '',
-        title: '',
+        title: 'A New Flakey!',
         event: '',
-        dateExpires: 0,
+        dateExpires: 63177120000000,
         dateCreated: 0,
         amount: 0,
         members: {},
@@ -329,7 +330,7 @@ services.createFlakey = function(uid) {
     flakey.owner = uid;
     flakey.members = {[uid]: true};
     flakey.dateCreated = Date.now();
-    flakey.dateExpires = 0;
+    // flakey.dateExpires = 63177120000000;
     
     const key = dbFlakeysRef.push().key;
     flakey.id = key;

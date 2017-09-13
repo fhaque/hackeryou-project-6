@@ -45,7 +45,7 @@ class FlakeyCard extends React.Component {
         this.setState({ 
             flakey: Object.assign({}, this.props.flakey),
             uneditedFlakey: Object.assign({}, this.props.flakey),
-            isNew: this.props.isNew || (this.props.flakey.dateExpires === 0),
+            isNew: this.props.isNew || (this.props.flakey.dateExpires === 63177120000000),
             isOwner: this.props.isOwner || false,
             editMode: this.props.editMode || false,
             fullDisplayMode: this.props.fullDisplayMode || false,
@@ -166,9 +166,7 @@ class FlakeyCard extends React.Component {
         {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false, id:''};
 
         //TODO: deprecate this
-        isNew = (this.state.uneditedFlakey.dateExpires === 0);
-
-        
+        isNew = (this.state.uneditedFlakey.dateExpires === 63177120000000);
 
         /* TODO: remove */
         // editMode = true;

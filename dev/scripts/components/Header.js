@@ -17,10 +17,10 @@ class Header extends React.Component {
 
     render() {
         // const {classEnvelope, classTitle} = props.classes;
-        const {user, title, editFlakeyMode} = this.props;
+        const {user, userAuth, title, editFlakeyMode} = this.props;
         const userName = user.name;
 
-        const {handleCreateNewFlakey, handleToFlakeysView} = this.props;
+        const {handleCreateNewFlakey, handleToFlakeysView, login, logout} = this.props;
 
 
         return (
@@ -37,6 +37,14 @@ class Header extends React.Component {
                 <button onClick={(e) => handleToFlakeysView(e, this.props.history)}>See My Flakeys</button>
 
                 <LoggedInUserIndicator userName={userName} className="Header__loggedInUserIndicator" />
+
+                {userAuth ?
+                    <button onClick={logout}>Log Out</button>              
+                    :
+                    <button onClick={login}>Log In</button>              
+                }
+
+
             </header>
         );
 

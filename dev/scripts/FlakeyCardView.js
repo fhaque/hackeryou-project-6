@@ -92,11 +92,13 @@ class FlakeyCardView extends React.Component {
         }
 
         let memberFlaked = false;
-        if ('flakedMembers' in flakey) {
-            memberFlaked = flakey.flakedMembers.includes(user.uid);
+
+        if ('flakedMembers' in (flakey || {}) ) {
+            const flakedMember = flakey.flakedMembers.filter( member => member.uid === user.uid);
+            
+            memberFlaked = (flakedMember.length !== 0);
         }
 
-        console.log('From FlakeyCardView', flakey);
 
         return (
             <div>

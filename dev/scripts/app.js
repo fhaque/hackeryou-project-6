@@ -8,7 +8,9 @@ import  {
         }                               from 'react-router-dom';
 import      moment                      from 'moment';
 
-import      firebase                    from './firebase';
+import      firebase, 
+            { auth, provider }          from './firebase';
+
 import      services                    from './services';
 
 import      Header                      from './components/Header';
@@ -17,6 +19,8 @@ import      FlakeysView                 from './FlakeysView';
 import      FlakeyCardView              from './FlakeyCardView.js'
 // import      CreateFlakeyView            from './CreateFlakeyView';
 // import      EditFlakeyView              from './EditFlakeyView';
+
+
 
 const dbUsersRef = firebase.database().ref('users/');
 const dbFlakeysRef = firebase.database().ref('flakeys/');
@@ -121,6 +125,7 @@ class App extends React.Component {
                 uid: '',
                 flakeyIds: [],
             },
+            userAuth: null,
             flakeys: [],
             focusedFlakey: {id: ''},
             flakeyForm: {},
@@ -141,7 +146,66 @@ class App extends React.Component {
         this.handleToFlakeysView = this.handleToFlakeysView.bind(this);
         // this.handleEditFlakey = this.handleEditFlakey.bind(this);
 
+        this.login = this.login.bind(this);
+        this.logout = this.logout.bind(this);
+        this.handleOnAuthStateChanged = this.handleOnAuthStateChanged.bind(this);
 
+
+    }
+
+    handleOnAuthStateChanged(userAuth) {
+        if (userAuth) {
+            services.getUserByUid(userAuth.uid)
+            .then( user => {
+                if (user) {
+                    return services.subscribeToUser(userAuth.uid, this.handleUserSubscription);
+                } else { //create new user
+                    const newUser = services.createUserObj();
+                    
+                    newUser.name = userAuth.displayName;
+                    newUser.uid = userAuth.uid;
+                    newUser.email = userAuth.email;
+                    newUser.photoURL = userAuth.photoURL;
+
+                    return services.saveNewUser(newUser.uid, newUser);
+                }
+
+            })
+            .then( () => this.setState({ userAuth }) );
+
+        }
+    }
+
+
+    login() {
+        let userAuth = {};
+        auth.signInWithPopup(provider) 
+            .then((result) => {
+                userAuth = result.user;
+
+                this.handleOnAuthStateChanged(userAuth);
+            });
+    
+    }
+
+    logout() {
+        auth.signOut()
+            .then( () => {
+
+                for(let flakeyId in this.state.flakeys) {
+                    services.unsubscribeToFlakey(flakeyId);
+                }    
+                    
+                return services.unsubscribeToUser(this.state.user.uid);
+
+            })
+            .then( () => {
+                this.setState({
+                    user: services.createUserObj(),
+                    flakeys: [],
+                    userAuth: null
+                });
+            });
     }
 
     handleToFlakeysView(e, history) {
@@ -187,17 +251,12 @@ class App extends React.Component {
         //transform data for Firebase DB
         const dbFlakey = services.flakeyToDbFlakey(flakey);
 
-        console.log(flakey);
-        console.log("Sending flakeyobj to services:",dbFlakey);
-
         services.updateFlakey(dbFlakey);
     }
 
     handleFlakeyChange(e) {
         e.preventDefault();
         const focusedFlakey = this.state.focusedFlakey;
-
-        console.log(e.target.value);
 
         focusedFlakey[e.target.name] = e.target.value;
 
@@ -207,10 +266,14 @@ class App extends React.Component {
     handleUserSubscription(userObj) {
         const user = services.dbUserToUser(userObj);
 
+        console.log("From user Subscription",this.state.user.flakeyIds);
+
         //unsubscribe to old flakeys
         this.state.user.flakeyIds.map( (flakeyId) => {
             //unsubscribe to old flakeys
-            services.unsubscribeToFlakey(flakeyId);
+            if (flakeyId !== "") {
+                services.unsubscribeToFlakey(flakeyId);
+            }
             
         });
 
@@ -233,7 +296,6 @@ class App extends React.Component {
 
     handleFlakeySubscription(flakeyObj) {
         if(flakeyObj) {
-            console.log(flakeyObj);
 
             //check if member of that flakey
             if(this.state.user.uid in flakeyObj.members) {
@@ -334,8 +396,12 @@ class App extends React.Component {
 
 
     componentDidMount() {
+
+        auth.onAuthStateChanged(this.handleOnAuthStateChanged);
+
+
         //Bob
-        services.subscribeToUser('-Ktcn3Bh5w7mZRZKwqwE', this.handleUserSubscription);
+        // services.subscribeToUser('-Ktcn3Bh5w7mZRZKwqwE', this.handleUserSubscription);
 
         //Sally
         // services.subscribeToUser('-KtgPURrKqTSpsRVEO3F', this.handleUserSubscription);
@@ -401,8 +467,11 @@ class App extends React.Component {
 
         const headerProps = {
             user: this.state.user,
+            userAuth: this.state.userAuth,
             handleCreateNewFlakey: this.handleCreateNewFlakey,
             handleToFlakeysView: this.handleToFlakeysView,
+            login: this.login,
+            logout: this.logout,
         }
 
         return (
