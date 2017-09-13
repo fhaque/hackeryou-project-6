@@ -158,15 +158,23 @@ class FlakeyCard extends React.Component {
     render() {
         let {editMode, isOwner, fullDisplayMode, isNew, memberFlaked} = this.props;
 
-        const {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete, id} = this.state.flakey || {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false, id: ''};
+        // const {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete, id} = this.state.flakey 
+        // || 
+        // {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false, id: ''};
 
         const uneditedFlakey = (!this.isEmpty(this.state.uneditedFlakey)) ?
             this.state.uneditedFlakey
         : 
         {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false, id:''};
 
+
+        const {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete, id} = uneditedFlakey;
+
+
         //TODO: deprecate this
         isNew = (this.state.uneditedFlakey.dateExpires === 63177120000000);
+        expired = uneditedFlakey.expired;
+        complete = uneditedFlakey.complete;
 
         /* TODO: remove */
         // editMode = true;
@@ -177,8 +185,8 @@ class FlakeyCard extends React.Component {
 
         const date= this.state.date;
         const time= this.state.time;
-        const dateCreatedFormatted = moment(dateCreated).format('MMMM Do YYYY, h:mm:ss a');
-        const dateExpiresFormatted = moment(dateExpires).format('MMMM Do YYYY, h:mm:ss a');
+        const dateCreatedFormatted = moment(uneditedFlakey.dateCreated).format('MMMM Do YYYY, h:mm:ss a');
+        const dateExpiresFormatted = moment(uneditedFlakey.dateExpires).format('MMMM Do YYYY, h:mm:ss a');
 
         /* ***** */
 
