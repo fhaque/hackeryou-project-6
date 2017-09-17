@@ -34,6 +34,7 @@ const style = {
     dropShadow: {
         primary:  '0px 0px 5px 0px rgba(0,0,0,0.65)',
         inset: 'inset 0px 0px 5px 0px rgba(0,0,0,0.52)',
+        text: '0px 0px 5px rgba(0, 0, 0, 0.4)',
     },
 
 }

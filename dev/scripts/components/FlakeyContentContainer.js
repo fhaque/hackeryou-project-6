@@ -20,13 +20,28 @@ var styles = {
 
     bottomDivider: {
         borderBottom: `1px solid ${style.colors.mute}` 
+    },
+
+    alert: {
+        background: style.colors.alertSecondary,
+    },
+
+    gradientAlert: {
+        background: `linear-gradient(90deg, ${style.colors.alertPrimary}, ${style.colors.alertSecondary})`,
+        boxShadow: style.dropShadow.inset
+    },
+    
+    gradientNormal: {
+        background: `linear-gradient(90deg, ${style.colors.primary}, ${style.colors.secondary})`,
+        boxShadow: style.dropShadow.inset
     }
+
 }
 
 class FlakeyContentContainer extends React.Component {
     
     render() {
-        const {bottomDivider, items} = this.props;
+        const {bottomDivider, items, bgStyle} = this.props;
         const innerContent = this.props.children;
 
         const selectedStyles = [styles.base];
@@ -39,6 +54,10 @@ class FlakeyContentContainer extends React.Component {
 
         if (bottomDivider) {
             selectedStyles.push(styles.bottomDivider);
+        }
+
+        if (bgStyle) {
+            selectedStyles.push(styles[bgStyle]);
         }
 
         return (

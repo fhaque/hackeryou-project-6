@@ -245,16 +245,23 @@ class FlakeyCard extends React.Component {
                         />
                     </FlakeyContentContainer>
                 
+                    <FlakeyContentContainer
+                        bottomDivider={true}
+                        items={1}
+                        bgStyle={!expired ? 'gradientNormal' : 'gradientAlert'}
+                    >
+                        <FlakeyExpirationTimer 
+                            editMode={isNew && editMode && isOwner}
+                            handleChange={handleChange}
+                            date={date}
+                            time={time}
+                            dateExpires={uneditedFlakey.dateExpires}
+                        />
+                </FlakeyContentContainer>
 
                 <p>Share Key to Others: <span className="FlakeyCard__entry-nonEdit">{id}</span></p>
 
-                <FlakeyExpirationTimer 
-                    editMode={isNew && editMode && isOwner}
-                    handleChange={handleChange}
-                    date={date}
-                    time={time}
-                    dateExpires={uneditedFlakey.dateExpires}
-                />
+                
 
                 <FlakeyPunishmentAmount 
                     editMode={isNew && editMode && isOwner}
