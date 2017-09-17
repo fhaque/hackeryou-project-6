@@ -1,6 +1,10 @@
 import React from 'react';
+import Radium from 'radium';
 import moment from 'moment';
 
+import style from '../style.js';
+
+import FlakeyContentContainer   from './FlakeyContentContainer.js';
 import FlakeyPrimaryActionArea  from './FlakeyPrimaryActionArea.js';
 import FlakeyEditActionArea     from './FlakeyEditActionArea.js';
 import FlakeyFlakers            from './FlakeyFlakers.js';
@@ -13,9 +17,26 @@ import FlakeyExpirationTimer    from './FlakeyExpirationTimer.js';
 import FlakeyEventName          from './FlakeyEventName.js';
 
 
+
 //Flakey card view modes: small view, large view
 //Flakey card function modes: view, edit
 //Flakey user states: member, owner
+
+var styles = {
+    base: {
+        backgroundColor: style.colors.light,
+        borderRadius: '8px',
+        boxShadow: style.dropShadow.primary,
+    },
+
+    small: {
+    },
+
+    large: {
+        fontSize: style.fontSize.cardHeading
+    },
+}
+
 
 class FlakeyCard extends React.Component {
     constructor() {
@@ -200,17 +221,30 @@ class FlakeyCard extends React.Component {
         const handleCommitToFlakey = this.props.handleCommitToFlakey || null;
 
         return (
-            <div className={`${fullDisplayMode ? 'FlakeyCard--expanded' : ''} FlakeyCard`} onClick={handleClick} onSubmit={this.handleSubmit}>
-                {expired && <p>Flakey's Time is Up!</p>}
-                {(expired && complete && memberFlaked) && <p>You're a Flaker!!!</p>}
+            <div 
+                style={[styles.base ,fullDisplayMode ? styles.large : styles.small]}
+                onClick={handleClick} 
+                onSubmit={this.handleSubmit}
+            >
+                
                 <form className="FlakeyCard__form">
+                    <FlakeyContentContainer
+                        bottomDivider={true}
+                        items={2}
+                    >
+                        <FlakeyEventName
+                            editMode={editMode && isOwner}
+                            handleChange={handleChange}
+                            event={event}
+                            uneditedEvent={uneditedFlakey.event}
+                        />
 
-                <FlakeyEventName
-                    editMode={editMode && isOwner}
-                    handleChange={handleChange}
-                    event={event}
-                    uneditedEvent={uneditedFlakey.event}
-                />
+                        <FlakeyCreatedBy 
+                            name={owner.name}
+                            moreStyles={{ textAlign: 'right' }}
+                        />
+                    </FlakeyContentContainer>
+                
 
                 <p>Share Key to Others: <span className="FlakeyCard__entry-nonEdit">{id}</span></p>
 
@@ -236,9 +270,7 @@ class FlakeyCard extends React.Component {
                     uneditedDescription={uneditedFlakey.description}
                 />
 
-                <FlakeyCreatedBy 
-                    name={owner.name}
-                />
+                
 
                 <FlakeyCreatedOn 
                     dateCreated={uneditedFlakey.dateCreated}
@@ -271,6 +303,8 @@ class FlakeyCard extends React.Component {
                 </FlakeyEditActionArea>
                 
             </form>
+            {expired && <p>Flakey's Time is Up!</p>}
+            {(expired && complete && memberFlaked) && <p>You're a Flaker!!!</p>}
 
             <FlakeyPrimaryActionArea>
                 {(fullDisplayMode && !isOwner && !expired) && <button onClick={handleCommitToFlakey}>Commit to Flakey</button>}
@@ -283,4 +317,5 @@ class FlakeyCard extends React.Component {
     }
 }
 
+FlakeyCard = Radium(FlakeyCard);
 export default FlakeyCard;
