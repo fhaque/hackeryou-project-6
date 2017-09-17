@@ -1,7 +1,17 @@
 import React from 'react';
 import moment from 'moment';
 
-import FlakeyMemberChecklist from './FlakeyMemberChecklist';
+import FlakeyPrimaryActionArea  from './FlakeyPrimaryActionArea.js';
+import FlakeyEditActionArea     from './FlakeyEditActionArea.js';
+import FlakeyFlakers            from './FlakeyFlakers.js';
+import FlakeyMembers            from './FlakeyMembers.js';
+import FlakeyCreatedOn          from './FlakeyCreatedOn.js';
+import FlakeyCreatedBy          from './FlakeyCreatedBy.js';
+import FlakeyDescription        from './FlakeyDescription.js';
+import FlakeyPunishmentAmount   from './FlakeyPunishmentAmount.js';
+import FlakeyExpirationTimer    from './FlakeyExpirationTimer.js';
+import FlakeyEventName          from './FlakeyEventName.js';
+
 
 //Flakey card view modes: small view, large view
 //Flakey card function modes: view, edit
@@ -176,17 +186,10 @@ class FlakeyCard extends React.Component {
         expired = uneditedFlakey.expired;
         complete = uneditedFlakey.complete;
 
-        /* TODO: remove */
-        // editMode = true;
-        // isOwner = true;
-        // isNew = true;
-        // fullDisplayMode = true;
-
 
         const date= this.state.date;
         const time= this.state.time;
-        const dateCreatedFormatted = moment(uneditedFlakey.dateCreated).format('MMMM Do YYYY, h:mm:ss a');
-        const dateExpiresFormatted = moment(uneditedFlakey.dateExpires).format('MMMM Do YYYY, h:mm:ss a');
+
 
         /* ***** */
 
@@ -201,105 +204,78 @@ class FlakeyCard extends React.Component {
                 {expired && <p>Flakey's Time is Up!</p>}
                 {(expired && complete && memberFlaked) && <p>You're a Flaker!!!</p>}
                 <form className="FlakeyCard__form">
-                { (editMode && isOwner) ?
-                    <label>
-                        <span className="FlakeyCard__inputLabel">Flakey Title:</span>
-                        <input type="text" name="title" onChange={handleChange} value={title} />
-                    </label>
-                : <h3 className="FlakeyCard__title">{uneditedFlakey.title}</h3>}
 
-                <p>Event Name: 
-                { (editMode && isOwner) ? (
-                    <label>
-                        <span style={{display:'none'}}>Event Name</span>
-                        <input type="text" name="event" onChange={handleChange} value={event} />
-                    </label>
-                    ) : ( 
-                    <span className="FlakeyCard__entry-nonEdit">{uneditedFlakey.event}</span>)}
-                </p>
+                <FlakeyEventName
+                    editMode={editMode && isOwner}
+                    handleChange={handleChange}
+                    event={event}
+                    uneditedEvent={uneditedFlakey.event}
+                />
 
                 <p>Share Key to Others: <span className="FlakeyCard__entry-nonEdit">{id}</span></p>
 
-                <p>This Flakey Expires On: 
-                { (isNew && editMode && isOwner) ? (
-                    <span>
-                        <label>
-                            Date:
-                            <input type="date" name="date" onChange={handleChange} value={date || moment().format('YYYY-MM-DD')} />
-                        </label>
-                        <label>
-                            Time:
-                            <input type="time" name="time" onChange={handleChange} value={time || moment().format('HH:mm')} />
-                        </label>
-                    </span>
-                ) : (
-                    <span className="FlakeyCard__entry-nonEdit">{dateExpiresFormatted}</span>)}
-                </p>
+                <FlakeyExpirationTimer 
+                    editMode={isNew && editMode && isOwner}
+                    handleChange={handleChange}
+                    date={date}
+                    time={time}
+                    dateExpires={uneditedFlakey.dateExpires}
+                />
 
-                <p>Punishment: 
-                { (isNew && editMode && isOwner) ? (
-                    <label>
-                        <span style={{display:'none'}}>Punishment amount:</span>
-                        <input type="text" name="amount" onChange={handleChange} value={Number(amount)} />
-                    </label>
-                ) : (
-                    <span className="FlakeyCard__entry-nonEdit">${Math.round(uneditedFlakey.amount * 100) / 100}</span>)}
+                <FlakeyPunishmentAmount 
+                    editMode={isNew && editMode && isOwner}
+                    handleChange={handleChange}
+                    amount={amount}
+                    uneditedAmount={uneditedFlakey.amount}
+                />
+
+                <FlakeyDescription
+                    editMode={editMode && isOwner}
+                    handleChange={handleChange}
+                    description={description}
+                    uneditedDescription={uneditedFlakey.description}
+                />
+
+                <FlakeyCreatedBy 
+                    name={owner.name}
+                />
+
+                <FlakeyCreatedOn 
+                    dateCreated={uneditedFlakey.dateCreated}
+                />
                 
-                </p>
 
-                <p>Description:</p>
-                { (editMode && isOwner) ? (
-                    <label>
-                    <span style={{display:'none'}}>Description:</span>
-                        <textarea name="description" onChange={handleChange} value={description} />
-                    </label>   
-                ) : (
-                    <p className="FlakeyCard__description">{uneditedFlakey.description}</p>)}
-
-                <p>Created by: <span className="FlakeyCard__entry-nonEdit">{owner.name}</span></p>
-                
-                <p>Created On: <span className="FlakeyCard__entry-nonEdit">{dateCreatedFormatted}</span></p>
-
-                {(fullDisplayMode && !complete) && <p>Potential Flakers:</p>}
-                {(fullDisplayMode && complete) && <p>Participants:</p>}
                 {fullDisplayMode &&
-                    ((isOwner && editMode && !complete) ? 
-                        <FlakeyMemberChecklist 
-                            members={members}
-                            owner={owner}
-                            membersToFlakedMembers={this.state.membersToFlakedMembers}
-                            membersToRemove={this.state.membersToRemove}
-                            expired={expired}
-                            complete={complete}
-                            flakedMembers={flakedMembers}
-                            handleChange={this.handleChange} />
-                    : 
-                        <ul className="FlakeyCard__list">
-                            {uneditedFlakey.members.map( (member) => {
-                                return (
-                                    <li key={member.uid} className="FlakeyCard__item">{member.name}</li>
-                                );
-                            })}
-                        </ul>
-                    )
+                    <FlakeyMembers 
+                        editMode={isOwner && editMode && !complete}
+                        members={members}
+                        uneditedMembers={uneditedFlakey.members}
+                        owner={owner}
+                        membersToFlakedMembers={this.state.membersToFlakedMembers}
+                        membersToRemove={this.state.membersToRemove}
+                        flakedMembers={flakedMembers}
+                        handleChange={this.handleChange}
+                    />
                 }
-                {(fullDisplayMode && uneditedFlakey.flakedMembers && !editMode) && <p>Flakers</p>}
-                {(fullDisplayMode && uneditedFlakey.flakedMembers && !editMode) && 
-                    <ul className="FlakeyCard__list">
-                    {uneditedFlakey.flakedMembers.map( (member) => {
-                        return (
-                            <li key={member.uid} className="FlakeyCard__item">{member.name}</li>
-                        );
-                    })}
-                    </ul>
+
+                {(fullDisplayMode && uneditedFlakey.flakedMembers && !editMode) &&
+                    <FlakeyFlakers 
+                        members={uneditedFlakey.flakedMembers}
+                    />
                 }
-                
-                {(fullDisplayMode && isOwner && !expired) && <button>Save Flakey</button>}
-                {(fullDisplayMode && isOwner && expired && !complete) && <button>Lock Flakey</button>}
+
+                <FlakeyEditActionArea>
+                    {(fullDisplayMode && editMode && isOwner && !expired) && <button>Save Flakey</button>}
+
+                    {(fullDisplayMode && isOwner && expired && !complete) && <button>Lock Flakey</button>}
+                </FlakeyEditActionArea>
                 
             </form>
-            {(fullDisplayMode && !isOwner && !expired) && <button onClick={handleCommitToFlakey}>Commit to Flakey</button>}
-            {/* (fullDisplayMode && isOwner) && <button>Delete</button> */}
+
+            <FlakeyPrimaryActionArea>
+                {(fullDisplayMode && !isOwner && !expired) && <button onClick={handleCommitToFlakey}>Commit to Flakey</button>}
+                 {/* (fullDisplayMode && isOwner) && <button>Delete</button> */}
+            </FlakeyPrimaryActionArea>           
             </div>
             //TODO: add Delete feature to above button.
         ); 
