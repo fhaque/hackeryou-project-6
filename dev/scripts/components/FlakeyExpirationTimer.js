@@ -5,10 +5,21 @@ import moment from 'moment';
 
 import style from '../style.js';
 
+//container style
 var styles = {
     base: {
         width: '100%',
         color: style.colors.light, 
+    },
+}
+
+var labelStyles = {
+    base: {
+        marginBottom: style.fontSize.cardEntryLabel,
+        textTransform: 'uppercase',
+        fontSize: style.fontSize.cardEntryLabel,
+        fontFamily: style.fontFamily.primary,
+        fontWeight: style.fontWeight.medium
     },
 }
 
@@ -18,7 +29,7 @@ var timeUnitContainerStyles = {
         flexDirection: 'column',
         alignItems: 'center',
 
-        margin: '0 3%',
+        margin: '0 2%',
 
         textShadow: style.dropShadow.text,
     }
@@ -27,7 +38,7 @@ var timeUnitContainerStyles = {
 var timeStyles = {
     base: {
         display: 'block',
-        fontSize: '1.8em',
+        fontSize: '1.5em',
         fontWeight: style.fontWeight.heavy,
         fontFamily: style.fontFamily.primary,
     }
@@ -36,7 +47,7 @@ var timeStyles = {
 var timeLabelStyles = {
     base: {
         display: 'block',
-        fontSize: '0.6em',
+        fontSize: '0.8em',
         fontWeight: style.fontWeight.medium,
         fontFamily: style.fontFamily.primary,
     }
@@ -151,7 +162,7 @@ class FlakeyExpirationTimer extends React.Component {
 
         return (
             <div style={styles.base}>
-            Flakey Expires On:
+            <p style={labelStyles.base}>Time Remaining</p>
             { editMode ? 
                     <span>
                         <label>

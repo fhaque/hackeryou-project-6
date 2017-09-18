@@ -1,4 +1,27 @@
 import React from 'react';
+import Radium from 'radium';
+
+import style from '../style.js';
+
+var labelStyles = {
+    base: {
+        marginBottom: style.fontSize.cardEntryLabel,
+        textTransform: 'uppercase',
+        fontSize: style.fontSize.cardEntryLabel,
+        fontFamily: style.fontFamily.primary,
+        fontWeight: style.fontWeight.medium
+    },
+}
+
+var amountStyles = {
+    base: {
+        color: style.colors.alertPrimary,
+        fontSize: '2.5em',
+        fontFamily: style.fontFamily.secondary,
+        fontWeight: style.fontWeight.heavy,
+        
+    }
+}
 
 class FlakeyPunishmentAmount extends React.Component {
     render() {
@@ -6,14 +29,17 @@ class FlakeyPunishmentAmount extends React.Component {
 
         return (
             <div>
-            Punishment Amount:
             { editMode ?
                     <label>
-                        <span style={{display:'none'}}>Punishment amount:</span>
+                        <span>Punishment amount:</span>
                         <input type="text" name="amount" onChange={handleChange} value={Number(amount)} />
                     </label>
                 :
-                    <span className="FlakeyCard__entry-nonEdit">${Math.round(uneditedAmount * 100) / 100}</span>
+                    <div>
+                        <p style={labelStyles.base}>Punishment</p>
+                        <p style={amountStyles.base}>${uneditedAmount.toFixed(2)}</p>
+                    </div>
+                    
             } 
             </div>
         );
@@ -21,4 +47,5 @@ class FlakeyPunishmentAmount extends React.Component {
 
 }
 
+FlakeyPunishmentAmount = Radium(FlakeyPunishmentAmount);
 export default FlakeyPunishmentAmount;

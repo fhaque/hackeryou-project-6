@@ -33,7 +33,8 @@ var styles = {
     },
 
     large: {
-        fontSize: style.fontSize.cardHeading
+        fontSize: style.fontSize.cardHeading,
+        maxWidth: '500px',
     },
 }
 
@@ -199,9 +200,6 @@ class FlakeyCard extends React.Component {
         {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false, id:''};
 
 
-        
-
-
         //TODO: deprecate this
         isNew = (this.state.uneditedFlakey.dateExpires === 63177120000000);
         expired = uneditedFlakey.expired;
@@ -230,7 +228,7 @@ class FlakeyCard extends React.Component {
                 <form className="FlakeyCard__form">
                     <FlakeyContentContainer
                         bottomDivider={true}
-                        items={2}
+                        items={fullDisplayMode ? 1 : 2}
                     >
                         <FlakeyEventName
                             editMode={editMode && isOwner}
@@ -239,10 +237,13 @@ class FlakeyCard extends React.Component {
                             uneditedEvent={uneditedFlakey.event}
                         />
 
-                        <FlakeyCreatedBy 
-                            name={owner.name}
-                            moreStyles={{ textAlign: 'right' }}
-                        />
+                       { !fullDisplayMode &&
+                            <FlakeyCreatedBy 
+                                name={owner.name}
+                                moreStyles={{ textAlign: 'right' }}
+                            />
+                       }
+
                     </FlakeyContentContainer>
                 
                     <FlakeyContentContainer
@@ -257,51 +258,73 @@ class FlakeyCard extends React.Component {
                             time={time}
                             dateExpires={uneditedFlakey.dateExpires}
                         />
+                    </FlakeyContentContainer>
+
+                    <FlakeyContentContainer
+                        bottomDivider={true}
+                        items={2}
+                    >
+                        <FlakeyPunishmentAmount 
+                            editMode={isNew && editMode && isOwner}
+                            handleChange={handleChange}
+                            amount={amount}
+                            uneditedAmount={uneditedFlakey.amount}
+                        />
+
+                        
+                            <FlakeyCreatedBy 
+                                name={owner.name}
+                                photoURL={owner.photoURL}
+                                moreStyles={{ textAlign: 'right' }}
+                            />
+                        
+
+                    </FlakeyContentContainer>
+
+                
+                <FlakeyContentContainer
+                    bottomDivider={true}
+                >
+
+                    {fullDisplayMode &&
+                        <FlakeyMembers 
+                            editMode={isOwner && editMode && !complete}
+                            members={members}
+                            uneditedMembers={uneditedFlakey.members}
+                            owner={owner}
+                            membersToFlakedMembers={this.state.membersToFlakedMembers}
+                            membersToRemove={this.state.membersToRemove}
+                            flakedMembers={flakedMembers}
+                            handleChange={this.handleChange}
+                        />
+                    }
+
+                    {(fullDisplayMode && uneditedFlakey.flakedMembers && !editMode) &&
+                        <FlakeyFlakers 
+                            members={uneditedFlakey.flakedMembers}
+                        />
+                    }
+
+                </FlakeyContentContainer>
+
+                    <FlakeyContentContainer
+                        bottomDivider={true}
+                    >
+                
+                    <FlakeyDescription
+                        editMode={editMode && isOwner}
+                        handleChange={handleChange}
+                        description={description}
+                        uneditedDescription={uneditedFlakey.description}
+                    />
+
                 </FlakeyContentContainer>
 
                 <p>Share Key to Others: <span className="FlakeyCard__entry-nonEdit">{id}</span></p>
 
-                
-
-                <FlakeyPunishmentAmount 
-                    editMode={isNew && editMode && isOwner}
-                    handleChange={handleChange}
-                    amount={amount}
-                    uneditedAmount={uneditedFlakey.amount}
-                />
-
-                <FlakeyDescription
-                    editMode={editMode && isOwner}
-                    handleChange={handleChange}
-                    description={description}
-                    uneditedDescription={uneditedFlakey.description}
-                />
-
-                
-
                 <FlakeyCreatedOn 
                     dateCreated={uneditedFlakey.dateCreated}
                 />
-                
-
-                {fullDisplayMode &&
-                    <FlakeyMembers 
-                        editMode={isOwner && editMode && !complete}
-                        members={members}
-                        uneditedMembers={uneditedFlakey.members}
-                        owner={owner}
-                        membersToFlakedMembers={this.state.membersToFlakedMembers}
-                        membersToRemove={this.state.membersToRemove}
-                        flakedMembers={flakedMembers}
-                        handleChange={this.handleChange}
-                    />
-                }
-
-                {(fullDisplayMode && uneditedFlakey.flakedMembers && !editMode) &&
-                    <FlakeyFlakers 
-                        members={uneditedFlakey.flakedMembers}
-                    />
-                }
 
                 <FlakeyEditActionArea>
                     {(fullDisplayMode && editMode && isOwner && !expired) && <button>Save Flakey</button>}

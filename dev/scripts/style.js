@@ -17,7 +17,8 @@ const style = {
         headingPrimary: '3.6rem',
         lgBtn: '1.8rem',
         indicatorText: '1.8rem',
-        cardHeading: '2.4rem'
+        cardHeading: '3.2rem',
+        cardEntryLabel: '0.45em'
     },
 
     fontWeight: {

@@ -4,17 +4,19 @@ import style from '../style.js';
 
 var styles = {
     base: {
-        display: 'flex',
-        alignItems: 'center',
         padding: '15px 20px'
     },
 
     oneItem: {
+        display: 'flex',
+        alignItems: 'center',
         justifyContent: 'flex-start',
         
     },
 
     twoItems: {
+        display: 'flex',
+        alignItems: 'center',
         justifyContent: 'space-between',
     },
 

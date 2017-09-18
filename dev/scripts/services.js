@@ -225,7 +225,8 @@ services.dbFlakeyToFlakey = function(flakeyObj) {
         .then( userArray => {
             flakey.owner = {
                 uid: userArray[0].uid,
-                name: userArray[0].name
+                name: userArray[0].name,
+                photoURL: userArray[0].photoURL,
             };
 
             //remove owner
@@ -233,7 +234,7 @@ services.dbFlakeyToFlakey = function(flakeyObj) {
 
             //expand out member information for Flakey
             flakey.members = userArray.map( user => {
-                return {uid: user.uid, name: user.name}
+                return {uid: user.uid, name: user.name, photoURL: user.photoURL}
             });
 
             //ensure flakedMembers are in sync

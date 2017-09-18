@@ -1,5 +1,44 @@
 import React from 'react';
+import Radium from 'radium';
+
+import style from '../style.js';
+
 import FlakeyMemberChecklist from './FlakeyMemberChecklist.js';
+import MemberImage from './MemberImage.js';
+
+var labelStyles = {
+    base: {
+        marginBottom: style.fontSize.cardEntryLabel,
+        textTransform: 'uppercase',
+        fontSize: style.fontSize.cardEntryLabel,
+        fontFamily: style.fontFamily.primary,
+        fontWeight: style.fontWeight.medium,
+        
+    },
+}
+
+var membersListStyles = {
+    base: {
+        display: 'flex',
+        listStyleType: 'none',
+    }
+}
+
+var membersItemStyles = {
+    base: {
+        width: '10%',
+        marginLeft: '-3%',
+    }
+}
+
+var memberImageStyles = {
+    base: {
+        position: 'relative',
+        right: 0,
+        // width: '20%',
+    }
+}
+
 
 class FlakeyMembers extends React.Component {
     render() {
@@ -7,7 +46,8 @@ class FlakeyMembers extends React.Component {
 
         return (
             <div>
-            Participants:
+                <p style={labelStyles.base}>Participants:</p>
+
             {editMode ? 
                 <FlakeyMemberChecklist 
                     members={members}
@@ -17,10 +57,17 @@ class FlakeyMembers extends React.Component {
                     flakedMembers={flakedMembers}
                     handleChange={handleChange} />
             : 
-                <ul className="FlakeyCard__list">
+                <ul style={membersListStyles.base}>
                     {uneditedMembers.map( (member) => {
                         return (
-                            <li key={member.uid} className="FlakeyCard__item">{member.name}</li>
+                            <li key={member.uid} style={membersItemStyles.base}>
+                                <div style={memberImageStyles.base}>
+                                    <MemberImage 
+                                        name={member.name}
+                                        photoURL={member.photoURL}
+                                    />
+                                </div>
+                            </li>
                         );
                     })}
                 </ul>
@@ -30,4 +77,5 @@ class FlakeyMembers extends React.Component {
     }
 }
 
+FlakeyMembers = Radium(FlakeyMembers);
 export default FlakeyMembers;
