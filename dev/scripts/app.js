@@ -19,6 +19,7 @@ import      FlakeysView                 from './FlakeysView';
 import      FlakeyCardView              from './FlakeyCardView.js'
 // import      CreateFlakeyView            from './CreateFlakeyView';
 // import      EditFlakeyView              from './EditFlakeyView';
+import      {StyleRoot}                 from 'radium';
 
 
 
@@ -231,12 +232,12 @@ class App extends React.Component {
     }
 
     handleFlakeySelection(e, flakeyId, history) {
-        if(this.state.focusedFlakey.id !== flakeyId) {
+        // if(this.state.focusedFlakey.id !== flakeyId) {
             this.setState({ 
                 focusedFlakey: this.state.flakeys[flakeyId],
             });
             history.push(`/flakeys/${flakeyId}`);
-        }
+        // }
     }
 
     handleFlakeySubmit(e, flakey) {
@@ -475,7 +476,7 @@ class App extends React.Component {
         }
 
         return (
-            <div>
+            <StyleRoot>
                 <Router>
                     <div>
                     <Route path="/" render={props => <Header {...props} {...headerProps}
@@ -509,7 +510,7 @@ class App extends React.Component {
 
                 
 
-            </div>
+            </StyleRoot>
         )
     }
 }

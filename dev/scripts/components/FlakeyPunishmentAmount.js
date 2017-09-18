@@ -37,7 +37,7 @@ class FlakeyPunishmentAmount extends React.Component {
                 :
                     <div>
                         <p style={labelStyles.base}>Punishment</p>
-                        <p style={amountStyles.base}>${uneditedAmount.toFixed(2)}</p>
+                        <p style={amountStyles.base}>${Number(uneditedAmount).toFixed(2)}</p>
                     </div>
                     
             } 

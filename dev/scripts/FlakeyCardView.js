@@ -1,8 +1,18 @@
-import React    from 'react';
-import services from './services';
+import React                from 'react';
+import Radium               from 'radium';
+
+import services             from './services';
+import style                from './style.js';
 
 import FlakeyCardViewHeader from './components/FlakeyCardViewHeader';
-import FlakeyCard from './components/FlakeyCard';
+import FlakeyCard           from './components/FlakeyCard';
+
+var flakeyCardStyle = {
+    base: {
+        width: '100%',
+        margin: '0 auto',
+    }
+}
 
 class FlakeyCardView extends React.Component {
     constructor() {
@@ -121,6 +131,7 @@ class FlakeyCardView extends React.Component {
                     editMode={editMode}
                     handleClick={this.handleHeaderClick} />
                 {flakey ? (
+                    <div style={flakeyCardStyle.base}>
                     <FlakeyCard
                             isOwner={isOwner}
                             isNew={isNew}
@@ -131,6 +142,7 @@ class FlakeyCardView extends React.Component {
                             handleCommitToFlakey={this.handleCommitToFlakey}
                             flakey={flakey}
                     />
+                    </div>
                 ) : (
                     <h3>No Flakey to show here!</h3>
                 )}
@@ -142,5 +154,5 @@ class FlakeyCardView extends React.Component {
 
 }
 
-
+FlakeyCardView = Radium(FlakeyCardView);
 export default FlakeyCardView;

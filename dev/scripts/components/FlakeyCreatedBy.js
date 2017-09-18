@@ -30,7 +30,7 @@ var memberImageStyles = {
     base: {
         position: 'relative',
         right: 0,
-        width: '30%',
+        width: '20%',
     }
 }
 

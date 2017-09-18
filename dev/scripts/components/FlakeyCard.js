@@ -15,6 +15,7 @@ import FlakeyDescription        from './FlakeyDescription.js';
 import FlakeyPunishmentAmount   from './FlakeyPunishmentAmount.js';
 import FlakeyExpirationTimer    from './FlakeyExpirationTimer.js';
 import FlakeyEventName          from './FlakeyEventName.js';
+import ShareKeyButton           from './ShareKeyButton.js';
 
 
 
@@ -24,18 +25,67 @@ import FlakeyEventName          from './FlakeyEventName.js';
 
 var styles = {
     base: {
+
         backgroundColor: style.colors.light,
         borderRadius: '8px',
         boxShadow: style.dropShadow.primary,
+
+        overflow: 'hidden',
+        
     },
 
     small: {
     },
 
     large: {
+        margin: '0 auto',
+        minWidth: '400px',
+        maxWidth: '700px',
+
         fontSize: style.fontSize.cardHeading,
-        maxWidth: '500px',
     },
+}
+
+var buttonStyles = {
+    base: {
+        // width: '32%',
+        maxWidth: '40em',
+        margin: '0 2%',
+
+        border: 'none',
+        backgroundColor: style.colors.accent,
+        boxShadow: style.dropShadow.primary,
+
+        color: style.colors.accentText,
+        fontSize: '0.8em',
+        fontFamily: style.fontFamily.secondary,
+        fontWeight: style.fontWeight.heavy,
+        textTransform: 'uppercase',
+
+        '@media (max-width: 30em)': {
+            fontSize: '0.5em'
+        }
+    },
+}
+
+var flakedTextStyles = {
+    base: {
+        padding: '2%',
+
+        color: style.colors.accentText,
+        fontSize: '1em',
+        fontFamily: style.fontFamily.secondary,
+        fontWeight: style.fontWeight.heavy,
+        textTransform: 'uppercase',
+    }
+}
+
+var buttonsContainerStyles = {
+    base: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        width: '40%',
+    }
 }
 
 
@@ -221,7 +271,6 @@ class FlakeyCard extends React.Component {
         return (
             <div 
                 style={[styles.base ,fullDisplayMode ? styles.large : styles.small]}
-                onClick={handleClick} 
                 onSubmit={this.handleSubmit}
             >
                 
@@ -320,26 +369,37 @@ class FlakeyCard extends React.Component {
 
                 </FlakeyContentContainer>
 
-                <p>Share Key to Others: <span className="FlakeyCard__entry-nonEdit">{id}</span></p>
 
-                <FlakeyCreatedOn 
+                
+                {/*<p>Copy & Share Key to Others: <span className="FlakeyCard__entry-nonEdit">{id}</span></p>
+                */}
+
+                {/*<FlakeyCreatedOn 
                     dateCreated={uneditedFlakey.dateCreated}
-                />
+                />*/}
 
-                <FlakeyEditActionArea>
-                    {(fullDisplayMode && editMode && isOwner && !expired) && <button>Save Flakey</button>}
+                <FlakeyEditActionArea bottomDivider={true}>
+                    {(fullDisplayMode && editMode && isOwner && !expired) && <button style={buttonStyles.base}>Save Flakey</button>}
 
-                    {(fullDisplayMode && isOwner && expired && !complete) && <button>Lock Flakey</button>}
+                    {(fullDisplayMode && isOwner && expired && !complete) && <button style={buttonStyles.base}>Lock Flakey</button>}
                 </FlakeyEditActionArea>
                 
             </form>
-            {expired && <p>Flakey's Time is Up!</p>}
-            {(expired && complete && memberFlaked) && <p>You're a Flaker!!!</p>}
+            
+            
+            
+                <FlakeyPrimaryActionArea alert={expired && complete && memberFlaked} bottomDivider={false}>
+                    {(expired && complete && memberFlaked) && <p style={flakedTextStyles.base}>You Flaker!</p>}
 
-            <FlakeyPrimaryActionArea>
-                {(fullDisplayMode && !isOwner && !expired) && <button onClick={handleCommitToFlakey}>Commit to Flakey</button>}
-                 {/* (fullDisplayMode && isOwner) && <button>Delete</button> */}
-            </FlakeyPrimaryActionArea>           
+                    <div style={buttonsContainerStyles.base}>
+                        <ShareKeyButton id={id} />
+
+                        {(fullDisplayMode && !isOwner && !expired) && <button onClick={handleCommitToFlakey} style={buttonStyles.base}>Commit to Flakey</button>}
+
+                        { !fullDisplayMode && <button onClick={handleClick} style={buttonStyles.base}>Details</button> }
+                    </div>
+                    {/* (fullDisplayMode && isOwner) && <button>Delete</button> */}
+                </FlakeyPrimaryActionArea>         
             </div>
             //TODO: add Delete feature to above button.
         ); 

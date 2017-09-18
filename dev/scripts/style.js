@@ -11,6 +11,7 @@ const style = {
         mute: '#e5e3e3', //'#757780',
         alertPrimary: '#F8333C',
         alertSecondary: '#DB2763', 
+        affirmPrimary: '#44af69',
     },
 
     fontSize: {
