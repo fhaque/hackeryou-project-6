@@ -1,7 +1,31 @@
-import      React                       from 'react';
-import      ReactDOM                    from 'react-dom';
+import  React       from 'react';
+import  ReactDOM    from 'react-dom';
+import  Radium      from 'radium';
 
-import FlakeyCard from './components/FlakeyCard';
+import  style       from './style.js';
+
+import  FlakeyCard  from './components/FlakeyCard';
+
+var styles = {
+    base: {
+        display: 'flex',
+        justifyContent: 'spaceEvenly',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+
+        margin: '0 auto',
+    },
+}
+
+var cardStyles = {
+    base: {
+        width: '33.33%',
+        minWidth: '300px',
+
+        padding: '5%',
+        margin: '0 auto',
+    },
+}
 
 class FlakeysView extends React.Component {
 
@@ -19,9 +43,10 @@ class FlakeysView extends React.Component {
         const user = this.props.user;
 
         return (
-            <div>
+            <div style={styles.base}>
                 {this.props.flakeys.map( flakey => {
                     return(
+                        <div style={cardStyles.base}>
                          <FlakeyCard key={flakey.id}
                             fullDisplayMode={false}
                             memberFlaked={this.checkMemberFlaked}
@@ -29,8 +54,7 @@ class FlakeysView extends React.Component {
                             handleClick={(e)=> this.props.handleFlakeySelection(e, flakey.id, this.props.history)}
                             flakey={flakey}
                         />
-
-                        
+                        </div>
                     )
                 })}
             </div>
@@ -38,5 +62,5 @@ class FlakeysView extends React.Component {
     }
 }
 
-
+FlakeysView = Radium(FlakeysView);
 export default FlakeysView;

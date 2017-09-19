@@ -23,7 +23,9 @@ import ShareKeyButton           from './ShareKeyButton.js';
 //Flakey card function modes: view, edit
 //Flakey user states: member, owner
 
-var styles = {
+
+
+let styles = {
     base: {
 
         backgroundColor: style.colors.light,
@@ -35,6 +37,7 @@ var styles = {
     },
 
     small: {
+        fontSize: `${style.cardFontSizeBase * 0.6}rem`,
     },
 
     large: {
@@ -84,8 +87,15 @@ var buttonsContainerStyles = {
     base: {
         display: 'flex',
         justifyContent: 'flex-end',
+        
+    },
+    small: {
+        width: '80%',
+    },
+    large: {
         width: '40%',
     }
+
 }
 
 
@@ -238,6 +248,7 @@ class FlakeyCard extends React.Component {
     }
 
     render() {
+
         let {editMode, isOwner, fullDisplayMode, isNew, memberFlaked} = this.props;
 
         let {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete, id} = this.state.flakey 
@@ -289,6 +300,7 @@ class FlakeyCard extends React.Component {
                        { !fullDisplayMode &&
                             <FlakeyCreatedBy 
                                 name={owner.name}
+                                photoURL={owner.photoURL}
                                 moreStyles={{ textAlign: 'right' }}
                             />
                        }
@@ -320,55 +332,57 @@ class FlakeyCard extends React.Component {
                             uneditedAmount={uneditedFlakey.amount}
                         />
 
-                        
+                        { fullDisplayMode &&
                             <FlakeyCreatedBy 
                                 name={owner.name}
                                 photoURL={owner.photoURL}
                                 moreStyles={{ textAlign: 'right' }}
                             />
-                        
+                        }
 
                     </FlakeyContentContainer>
 
-                
-                <FlakeyContentContainer
-                    bottomDivider={true}
-                >
+                {fullDisplayMode &&
+                    <FlakeyContentContainer
+                        bottomDivider={true}
+                    >
 
-                    {fullDisplayMode &&
-                        <FlakeyMembers 
-                            editMode={isOwner && editMode && !complete}
-                            members={members}
-                            uneditedMembers={uneditedFlakey.members}
-                            owner={owner}
-                            membersToFlakedMembers={this.state.membersToFlakedMembers}
-                            membersToRemove={this.state.membersToRemove}
-                            flakedMembers={flakedMembers}
-                            handleChange={this.handleChange}
-                        />
-                    }
+                        {fullDisplayMode &&
+                            <FlakeyMembers 
+                                editMode={isOwner && editMode && !complete}
+                                members={members}
+                                uneditedMembers={uneditedFlakey.members}
+                                owner={owner}
+                                membersToFlakedMembers={this.state.membersToFlakedMembers}
+                                membersToRemove={this.state.membersToRemove}
+                                flakedMembers={flakedMembers}
+                                handleChange={this.handleChange}
+                            />
+                        }
 
-                    {(fullDisplayMode && uneditedFlakey.flakedMembers && !editMode) &&
-                        <FlakeyFlakers 
-                            members={uneditedFlakey.flakedMembers}
-                        />
-                    }
+                        {(fullDisplayMode && uneditedFlakey.flakedMembers && !editMode) &&
+                            <FlakeyFlakers 
+                                members={uneditedFlakey.flakedMembers}
+                            />
+                        }
 
-                </FlakeyContentContainer>
+                    </FlakeyContentContainer>
+                }
 
+                {fullDisplayMode &&
                     <FlakeyContentContainer
                         bottomDivider={true}
                     >
                 
-                    <FlakeyDescription
-                        editMode={editMode && isOwner}
-                        handleChange={handleChange}
-                        description={description}
-                        uneditedDescription={uneditedFlakey.description}
-                    />
+                        <FlakeyDescription
+                            editMode={editMode && isOwner}
+                            handleChange={handleChange}
+                            description={description}
+                            uneditedDescription={uneditedFlakey.description}
+                        />
 
-                </FlakeyContentContainer>
-
+                    </FlakeyContentContainer>
+                }
 
                 
                 {/*<p>Copy & Share Key to Others: <span className="FlakeyCard__entry-nonEdit">{id}</span></p>
@@ -378,11 +392,13 @@ class FlakeyCard extends React.Component {
                     dateCreated={uneditedFlakey.dateCreated}
                 />*/}
 
-                <FlakeyEditActionArea bottomDivider={true}>
-                    {(fullDisplayMode && editMode && isOwner && !expired) && <button style={buttonStyles.base}>Save Flakey</button>}
+                {fullDisplayMode &&
+                    <FlakeyEditActionArea bottomDivider={true}>
+                        {(fullDisplayMode && editMode && isOwner && !expired) && <button style={buttonStyles.base}>Save Flakey</button>}
 
-                    {(fullDisplayMode && isOwner && expired && !complete) && <button style={buttonStyles.base}>Lock Flakey</button>}
-                </FlakeyEditActionArea>
+                        {(fullDisplayMode && isOwner && expired && !complete) && <button style={buttonStyles.base}>Lock Flakey</button>}
+                    </FlakeyEditActionArea>
+                }
                 
             </form>
             
@@ -391,7 +407,7 @@ class FlakeyCard extends React.Component {
                 <FlakeyPrimaryActionArea alert={expired && complete && memberFlaked} bottomDivider={false}>
                     {(expired && complete && memberFlaked) && <p style={flakedTextStyles.base}>You Flaker!</p>}
 
-                    <div style={buttonsContainerStyles.base}>
+                    <div style={[buttonsContainerStyles.base, fullDisplayMode ? buttonsContainerStyles.large : buttonsContainerStyles.small]}>
                         <ShareKeyButton id={id} />
 
                         {(fullDisplayMode && !isOwner && !expired) && <button onClick={handleCommitToFlakey} style={buttonStyles.base}>Commit to Flakey</button>}

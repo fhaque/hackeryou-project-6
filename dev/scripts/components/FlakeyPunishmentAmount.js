@@ -3,15 +3,7 @@ import Radium from 'radium';
 
 import style from '../style.js';
 
-var labelStyles = {
-    base: {
-        marginBottom: style.fontSize.cardEntryLabel,
-        textTransform: 'uppercase',
-        fontSize: style.fontSize.cardEntryLabel,
-        fontFamily: style.fontFamily.primary,
-        fontWeight: style.fontWeight.medium
-    },
-}
+var labelStyles = style.el.labelStyles;
 
 var amountStyles = {
     base: {
@@ -32,7 +24,7 @@ class FlakeyPunishmentAmount extends React.Component {
             { editMode ?
                     <label>
                         <span>Punishment amount:</span>
-                        <input type="text" name="amount" onChange={handleChange} value={Number(amount)} />
+                        <input type="number" name="amount" onChange={handleChange} value={Number(amount)} />
                     </label>
                 :
                     <div>

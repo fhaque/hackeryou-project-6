@@ -8,14 +8,23 @@ var nonEditStyles = {
         fontSize: '1em',
         fontFamily: style.fontFamily.secondary,
         fontWeight: style.fontWeight.medium,
+
+        '@media (max-width: 30em)': {
+            fontSize: '0.5em'
+        }
     }
 }
 
 var editStyles = {
     base: {
-        
+        fontSize: '1em',
+        fontFamily: style.fontFamily.secondary,
+        fontWeight: style.fontWeight.medium,
     }
 }
+
+var labelStyles = style.el.labelStyles;
+
 
 class FlakeyEventName extends React.Component {
     render() {
@@ -24,11 +33,14 @@ class FlakeyEventName extends React.Component {
         return (
             <div>
             {editMode ?
-                <label>
-                    Event Name:
-                    <span style={{display:'none'}}>Event Name</span>
-                    <input type="text" name="event" onChange={handleChange} value={event} />
-                </label>
+                <div style={editStyles.base}>
+                    <p style={labelStyles.base}>Event Name</p>
+                    <label>
+                        
+                        <span style={{display:'none'}}>Event Name</span>
+                        <input type="text" name="event" onChange={handleChange} value={event} required/>
+                    </label>
+                </div>
                 :
                 <p style={nonEditStyles.base}>{uneditedEvent}</p>
             }

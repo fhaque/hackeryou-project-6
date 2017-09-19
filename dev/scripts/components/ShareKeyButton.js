@@ -6,6 +6,7 @@ import style from '../style.js';
 
 var styles = {
     base: {
+        display: 'block',
         // width: '100%',
         maxWidth: '40em',
 
@@ -13,13 +14,13 @@ var styles = {
         boxShadow: style.dropShadow.primary,
 
         color: style.colors.accentText,
-        fontSize: '0.8em',
+        fontSize: '0.5em',
         fontFamily: style.fontFamily.secondary,
         fontWeight: style.fontWeight.heavy,
         textTransform: 'uppercase',
 
         '@media (max-width: 30em)': {
-            fontSize: '0.5em'
+            fontSize: '0.4em'
         }
     },
 

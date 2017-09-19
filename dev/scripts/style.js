@@ -39,6 +39,30 @@ const style = {
         text: '0px 0px 5px rgba(0, 0, 0, 0.4)',
     },
 
+
+}
+
+style.cardFontSizeBase = 3.2; //rem
+
+style.fontSize = {
+    headingPrimary: '3.6rem',
+    lgBtn: '1.8rem',
+    indicatorText: '1.8rem',
+    cardHeading: `${style.cardFontSizeBase}rem`,
+    cardEntryLabel: '0.65em'
+};
+
+style.el = {};
+
+style.el.labelStyles = {
+    base: {
+        marginBottom: style.fontSize.cardEntryLabel,
+        textTransform: 'uppercase',
+        fontSize: style.fontSize.cardEntryLabel,
+        fontFamily: style.fontFamily.primary,
+        fontWeight: style.fontWeight.medium,
+        
+    },
 }
 
 export default style;
