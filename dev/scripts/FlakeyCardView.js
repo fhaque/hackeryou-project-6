@@ -21,7 +21,7 @@ class FlakeyCardView extends React.Component {
         this.state = {
             flakey: null,
             // editMode: false, 
-            isNew: false,
+            // isNew: false,
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -99,17 +99,17 @@ class FlakeyCardView extends React.Component {
         e.preventDefault();
         this.props.handleFlakeySubmit(e, flakey);
 
-        this.setState({ 
-            // editMode: false,
-            isNew: false
-        });
+        // this.setState({ 
+        //     // editMode: false,
+        //     // isNew: false
+        // });
     }
 
     render() {
         const { user, editMode } = this.props;
         const flakey = this.state.flakey; //|| {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
 
-        const { isNew } = this.state;
+        // const { isNew } = this.state;
         
         let isOwner;
         if (flakey !== null) {
@@ -134,7 +134,7 @@ class FlakeyCardView extends React.Component {
                     <div style={flakeyCardStyle.base}>
                     <FlakeyCard
                             isOwner={isOwner}
-                            isNew={isNew}
+                            // isNew={isNew}
                             editMode={editMode || false}
                             memberFlaked={memberFlaked}
                             fullDisplayMode={true}

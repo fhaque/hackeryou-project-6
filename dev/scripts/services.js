@@ -155,7 +155,7 @@ services.createFlakeyObj = function(flakeyVals) {
         owner: '',
         title: 'A New Flakey!',
         event: '',
-        dateExpires: 63177120000000,
+        dateExpires: Date.now() + 1 * 60 * 60* 1000, //set to expire hour from now by default
         dateCreated: 0,
         amount: 0,
         members: {},
@@ -164,6 +164,7 @@ services.createFlakeyObj = function(flakeyVals) {
         expired: false,
         deleted: false,
         complete: false,
+        isNew: true,
         description: '',
     };
 

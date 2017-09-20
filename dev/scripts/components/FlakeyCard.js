@@ -110,7 +110,7 @@ class FlakeyCard extends React.Component {
             editMode: false,
             isOwner: false,
             fullDisplayMode: false,
-            isNew: false,
+            // isNew: false,
 
             //form specific inputs
             date: null,
@@ -146,9 +146,9 @@ class FlakeyCard extends React.Component {
         this.setState({ 
             flakey: Object.assign({}, this.props.flakey),
             uneditedFlakey: Object.assign({}, this.props.flakey),
-            isNew: this.props.isNew || (this.props.flakey.dateExpires === 63177120000000),
+            // isNew: this.props.flakey.isNew || false,
             isOwner: this.props.isOwner || false,
-            editMode: this.props.editMode || false,
+            editMode: this.props.editMode || this.props.flakey.isNew || false,
             fullDisplayMode: this.props.fullDisplayMode || false,
             date: moment(this.props.flakey.dateExpires).format('YYYY-MM-DD'),
             time: moment(this.props.flakey.dateExpires).format('HH:mm'),
@@ -161,6 +161,9 @@ class FlakeyCard extends React.Component {
         const uneditedFlakey = Object.assign({}, flakey);
 
         this.setState({ uneditedFlakey });
+
+        //force edit mode if Flakey is new.
+        this.setState({ editMode: uneditedFlakey.isNew });
 
         if(!this.state.editMode) {
             this.setState({ 
@@ -210,6 +213,8 @@ class FlakeyCard extends React.Component {
         flakey.flakedMembers = flakey.members.filter( (member) => {
             return this.state.membersToFlakedMembers.includes(member.uid);
         });
+
+
 
 
         this.setState({ 
@@ -282,8 +287,8 @@ class FlakeyCard extends React.Component {
 
     render() {
 
-        let {isOwner, fullDisplayMode, isNew, memberFlaked} = this.props;
-        const editMode = this.state.editMode;
+        let {isOwner, fullDisplayMode, memberFlaked} = this.props;
+        
 
         let {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete, id} = this.state.flakey 
         || 
@@ -296,7 +301,10 @@ class FlakeyCard extends React.Component {
 
 
         //TODO: deprecate this
-        isNew = (this.state.uneditedFlakey.dateExpires === 63177120000000);
+        // isNew = (this.state.uneditedFlakey.dateExpires === 63177120000000);
+        const isNew = uneditedFlakey.isNew || false;
+        //force editMode
+        const editMode = this.state.editMode || uneditedFlakey.isNew;
         expired = uneditedFlakey.expired;
         complete = uneditedFlakey.complete;
 

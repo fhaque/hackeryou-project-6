@@ -260,8 +260,12 @@ class App extends React.Component {
             flakey.complete = true;
         }
 
+        //since Flakey being saved, set isNew to false
+        flakey.isNew = false;
+
         //transform data for Firebase DB
         const dbFlakey = services.flakeyToDbFlakey(flakey);
+
 
         services.updateFlakey(dbFlakey);
     }
