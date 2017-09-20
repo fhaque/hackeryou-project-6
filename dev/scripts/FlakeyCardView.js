@@ -20,13 +20,13 @@ class FlakeyCardView extends React.Component {
 
         this.state = {
             flakey: null,
-            editMode: false, 
+            // editMode: false, 
             isNew: false,
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleHeaderClick = this.handleHeaderClick.bind(this);
-        this.toggleEditMode = this.toggleEditMode.bind(this);
+        // this.handleHeaderClick = this.handleHeaderClick.bind(this);
+        // this.toggleEditMode = this.toggleEditMode.bind(this);
 
         this.handleFlakeySubscription = this.handleFlakeySubscription.bind(this);
         this.handleCommitToFlakey = this.handleCommitToFlakey.bind(this);
@@ -81,35 +81,35 @@ class FlakeyCardView extends React.Component {
         }
     }
 
-    handleHeaderClick(e) {
-        e.preventDefault();
-        const target = e.target;
-        const name = target.name;
+    // handleHeaderClick(e) {
+    //     e.preventDefault();
+    //     const target = e.target;
+    //     const name = target.name;
 
-        if (name === "edit" || name === "cancel") {
-            this.toggleEditMode();
-        }
-    }
+    //     if (name === "edit" || name === "cancel") {
+    //         this.toggleEditMode();
+    //     }
+    // }
 
-    toggleEditMode() {
-        this.setState({ editMode: !this.state.editMode });
-    }
+    // toggleEditMode() {
+    //     this.setState({ editMode: !this.state.editMode });
+    // }
 
     handleSubmit(e, flakey) {
         e.preventDefault();
         this.props.handleFlakeySubmit(e, flakey);
 
         this.setState({ 
-            editMode: false,
+            // editMode: false,
             isNew: false
         });
     }
 
     render() {
-        const user = this.props.user;
+        const { user, editMode } = this.props;
         const flakey = this.state.flakey; //|| {title: '', event: '', amount: 0, dateCreated: 0, dateExpires: 0, owner: '', members: [], flakedMembers: [], description: '', expired: false, complete: false};
 
-        const { isNew, editMode } = this.state;
+        const { isNew } = this.state;
         
         let isOwner;
         if (flakey !== null) {
@@ -127,15 +127,15 @@ class FlakeyCardView extends React.Component {
 
         return (
             <div>
-                <FlakeyCardViewHeader
+                {/*<FlakeyCardViewHeader
                     editMode={editMode}
-                    handleClick={this.handleHeaderClick} />
+                    handleClick={this.handleHeaderClick} />*/}
                 {flakey ? (
                     <div style={flakeyCardStyle.base}>
                     <FlakeyCard
                             isOwner={isOwner}
                             isNew={isNew}
-                            editMode={editMode}
+                            editMode={editMode || false}
                             memberFlaked={memberFlaked}
                             fullDisplayMode={true}
                             handleSubmit={this.handleSubmit}

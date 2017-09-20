@@ -16,6 +16,7 @@ import FlakeyPunishmentAmount   from './FlakeyPunishmentAmount.js';
 import FlakeyExpirationTimer    from './FlakeyExpirationTimer.js';
 import FlakeyEventName          from './FlakeyEventName.js';
 import ShareKeyButton           from './ShareKeyButton.js';
+import FlakeyEditButton         from './FlakeyEditButton.js'
 
 
 
@@ -119,6 +120,7 @@ class FlakeyCard extends React.Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleClick = this.handleClick.bind(this);
 
     }
 
@@ -168,7 +170,18 @@ class FlakeyCard extends React.Component {
         }
 
         this.setState({ membersToFlakedMembers });
-    } 
+    }
+
+    handleClick(e) {
+        e.preventDefault();
+        const target = e.target;
+        const name = target.name;
+
+        //toggle whether in edit mode or not
+        if (name === "edit") {
+            this.setState({ editMode: !this.state.editMode });
+        }
+    }
 
     handleSubmit(e) {
         e.preventDefault();
@@ -186,7 +199,10 @@ class FlakeyCard extends React.Component {
         });
 
 
-        this.setState({ flakey });
+        this.setState({ 
+            flakey,
+            editMode: !this.state.editMode,
+         });
 
         this.props.handleSubmit(e, flakey);
     }
@@ -249,7 +265,8 @@ class FlakeyCard extends React.Component {
 
     render() {
 
-        let {editMode, isOwner, fullDisplayMode, isNew, memberFlaked} = this.props;
+        let {isOwner, fullDisplayMode, isNew, memberFlaked} = this.props;
+        const editMode = this.state.editMode;
 
         let {title, event, amount, dateCreated, dateExpires, owner, members, flakedMembers, description, expired, complete, id} = this.state.flakey 
         || 
@@ -297,13 +314,17 @@ class FlakeyCard extends React.Component {
                             uneditedEvent={uneditedFlakey.event}
                         />
 
-                       { !fullDisplayMode &&
+                        { fullDisplayMode && 
+                            <FlakeyEditButton handleClick={this.handleClick} editMode={editMode} />
+                        }
+
+                        { !fullDisplayMode &&
                             <FlakeyCreatedBy 
                                 name={owner.name}
                                 photoURL={owner.photoURL}
                                 moreStyles={{ textAlign: 'right' }}
                             />
-                       }
+                        }
 
                     </FlakeyContentContainer>
                 
