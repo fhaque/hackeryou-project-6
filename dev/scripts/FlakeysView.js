@@ -46,8 +46,8 @@ class FlakeysView extends React.Component {
             <div style={styles.base}>
                 {this.props.flakeys.map( flakey => {
                     return(
-                        <div style={cardStyles.base}>
-                         <FlakeyCard key={flakey.id}
+                        <div style={cardStyles.base} key={flakey.id}>
+                         <FlakeyCard 
                             fullDisplayMode={false}
                             memberFlaked={this.checkMemberFlaked}
                             isOwner={user.uid === flakey.owner.uid}

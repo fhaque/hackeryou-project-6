@@ -17,7 +17,7 @@ class Header extends React.Component {
 
     render() {
         // const {classEnvelope, classTitle} = props.classes;
-        const {user, userAuth, title, editFlakeyMode} = this.props;
+        const {user, userAuth, title, editFlakeyMode, history} = this.props;
         const userName = user.name;
         const photoURL = user.photoURL;
 
@@ -27,24 +27,28 @@ class Header extends React.Component {
         return (
             <header className="Header">
                 <h1 className="Header__title">{title}</h1>
-                <AddFlakeyKeyBar className="Header__addFlakeyKeyBar" handleSubmit={this.handleSubmit} />
-                <div className="Header__btnContainer">
-                    <button onClick={(e) => handleCreateNewFlakey(e, this.props.history)} >Create New Flakey</button>
-                    {/* editFlakeyMode ? 
-                        <button className="Header__btn Header__editBtn" onClick={handleEditFlakey}>Cancel</button>
-                    : 
-                        <button className="Header_btn Header__editBtn" onClick={handleEditFlakey}>Edit Flakey</button>
-                    */}
-                    
-                    <button onClick={(e) => handleToFlakeysView(e, this.props.history)}>See My Flakeys</button>
+                {userAuth &&
+                <div className="Header__loggedInUserUI">
+                    <AddFlakeyKeyBar className="Header__addFlakeyKeyBar" handleSubmit={this.handleSubmit} />
+                    <div className="Header__btnContainer">
+                        <button onClick={(e) => handleCreateNewFlakey(e, this.props.history)} >Create New Flakey</button>
+                        {/* editFlakeyMode ? 
+                            <button className="Header__btn Header__editBtn" onClick={handleEditFlakey}>Cancel</button>
+                        : 
+                            <button className="Header_btn Header__editBtn" onClick={handleEditFlakey}>Edit Flakey</button>
+                        */}
+                        
+                        <button onClick={(e) => handleToFlakeysView(e, this.props.history)}>See My Flakeys</button>
+                    </div>
                 </div>
+                }
 
                 <LoggedInUserIndicator userName={userName} photoURL={photoURL} className="Header__loggedInUserIndicator" />
 
                 {userAuth ?
-                    <button onClick={logout}>Log Out</button>              
+                    <button onClick={(e) => logout(e, history)}>Log Out</button>              
                     :
-                    <button onClick={login}>Log In</button>              
+                    <button onClick={(e) => login(e, history)}>Log In</button>              
                 }
 
 

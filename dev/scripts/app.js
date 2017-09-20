@@ -155,8 +155,9 @@ class App extends React.Component {
     }
 
     handleOnAuthStateChanged(userAuth) {
+
         if (userAuth) {
-            services.getUserByUid(userAuth.uid)
+            return services.getUserByUid(userAuth.uid)
             .then( user => {
                 if (user) {
                     return services.subscribeToUser(userAuth.uid, this.handleUserSubscription);
@@ -172,24 +173,31 @@ class App extends React.Component {
                 }
 
             })
-            .then( () => this.setState({ userAuth }) );
+            .then( () => this.setState({ userAuth }));
 
+        } else {
+            return Promise.resolve();
         }
     }
 
 
-    login() {
+    login(e, history) {
+        e.preventDefault();
+
         let userAuth = {};
         auth.signInWithPopup(provider) 
             .then((result) => {
                 userAuth = result.user;
 
-                this.handleOnAuthStateChanged(userAuth);
-            });
+                return this.handleOnAuthStateChanged(userAuth);
+            })
+            .then( () => history.push('/flakeys') );
     
     }
 
-    logout() {
+    logout(e, history) {
+        e.preventDefault();
+
         auth.signOut()
             .then( () => {
 
@@ -206,7 +214,10 @@ class App extends React.Component {
                     flakeys: [],
                     userAuth: null
                 });
-            });
+
+                //go back home after logout
+                history.push(`/`);
+            })
     }
 
     handleToFlakeysView(e, history) {

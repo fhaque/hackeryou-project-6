@@ -70,9 +70,16 @@ button, input[type="submit"] {
     font-size: 3rem;
 }
 
+.Header__loggedInUserUI {
+    display: flex;
+    justify-content: space-between;
+}
+
 .Header__btnContainer button {
     margin: 0px 5px;
 }
+
+
 
 //********* AddFlakeyKeyBar *********//
 .AddFlakeyKeyBar {
