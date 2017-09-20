@@ -38,7 +38,7 @@ class FlakeyEventName extends React.Component {
                     <label>
                         
                         <span style={{display:'none'}}>Event Name</span>
-                        <input type="text" name="event" onChange={handleChange} value={event} required/>
+                        <input type="text" name="event" onChange={handleChange} value={event} style={style.el.formInput.base} required/>
                     </label>
                 </div>
                 :

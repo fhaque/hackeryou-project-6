@@ -1,6 +1,7 @@
 const style = {
     colors: {
         primary: '#24C6DC',
+        primaryVeryLight: 'rgba(36, 198, 220, 0.21)',
         secondary: '#514A9D',
         light: '#FFFFFF',
         dark: '#1B065E',
@@ -12,6 +13,7 @@ const style = {
         alertPrimary: '#F8333C',
         alertSecondary: '#DB2763', 
         affirmPrimary: '#44af69',
+        
     },
 
     fontSize: {
@@ -63,6 +65,14 @@ style.el.labelStyles = {
         fontWeight: style.fontWeight.medium,
         
     },
+}
+
+style.el.formInput = {
+    base: {
+        border: 'none',
+        borderRadius: '2px',
+        backgroundColor: style.colors.primaryVeryLight,
+    }
 }
 
 export default style;

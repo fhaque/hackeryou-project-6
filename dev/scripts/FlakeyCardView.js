@@ -7,6 +7,12 @@ import style                from './style.js';
 import FlakeyCardViewHeader from './components/FlakeyCardViewHeader';
 import FlakeyCard           from './components/FlakeyCard';
 
+var styles = {
+    base: {
+        padding: '10%',
+    }
+}
+
 var flakeyCardStyle = {
     base: {
         width: '100%',
@@ -128,7 +134,7 @@ class FlakeyCardView extends React.Component {
 
 
         return (
-            <div>
+            <div style={styles.base}>
                 {/*<FlakeyCardViewHeader
                     editMode={editMode}
                     handleClick={this.handleHeaderClick} />*/}

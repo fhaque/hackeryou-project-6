@@ -180,11 +180,11 @@ class FlakeyExpirationTimer extends React.Component {
                     <span>
                         <label>
                             Date:
-                            <input type="date" name="date" onChange={handleChange} value={date || moment().format('YYYY-MM-DD')} />
+                            <input type="date" name="date" onChange={handleChange} value={date || moment().format('YYYY-MM-DD')} style={style.el.formInput.base} />
                         </label>
                         <label>
                             Time:
-                            <input type="time" name="time" onChange={handleChange} value={time || moment().format('HH:mm')} />
+                            <input type="time" name="time" onChange={handleChange} value={time || moment().format('HH:mm')} style={style.el.formInput.base} />
                         </label>
                     </span>
                  :

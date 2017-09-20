@@ -14,6 +14,7 @@ var descriptionStyles = {
     }
 }
 
+
 class FlakeyDescription extends React.Component {
     render() {
         const {editMode, handleChange, description, uneditedDescription} = this.props;
@@ -24,7 +25,7 @@ class FlakeyDescription extends React.Component {
             { editMode ? 
                     <label>
                     <span style={{display:'none'}}>Description:</span>
-                        <textarea name="description" onChange={handleChange} value={description} />
+                        <textarea name="description" onChange={handleChange} value={description} style={[style.el.formInput.base, descriptionStyles.base]}/>
                     </label>   
                 :
                     <p style={descriptionStyles.base}>{uneditedDescription}</p>

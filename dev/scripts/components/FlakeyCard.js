@@ -45,7 +45,7 @@ let styles = {
 
     large: {
         margin: '0 auto',
-        minWidth: '400px',
+        minWidth: '350px',
         maxWidth: '700px',
 
         fontSize: style.fontSize.cardHeading,
@@ -56,7 +56,7 @@ var buttonStyles = {
     base: {
         // width: '32%',
         maxWidth: '40em',
-        margin: '0 2%',
+        // margin: '0 2%',
 
         border: 'none',
         backgroundColor: style.colors.accent,
@@ -331,7 +331,7 @@ class FlakeyCard extends React.Component {
                 <form className="FlakeyCard__form">
                     <FlakeyContentContainer
                         bottomDivider={true}
-                        items={fullDisplayMode ? 1 : 2}
+                        items={2}
                     >
                         <FlakeyEventName
                             editMode={editMode && isOwner}

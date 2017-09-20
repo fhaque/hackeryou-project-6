@@ -22,7 +22,7 @@ var cardStyles = {
         width: '33.33%',
         minWidth: '300px',
 
-        padding: '5%',
+        padding: '3%',
         margin: '0 auto',
     },
 }
