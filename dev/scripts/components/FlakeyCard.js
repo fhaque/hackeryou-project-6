@@ -163,7 +163,13 @@ class FlakeyCard extends React.Component {
         this.setState({ uneditedFlakey });
 
         if(!this.state.editMode) {
-            this.setState({ flakey: uneditedFlakey });
+            this.setState({ 
+                flakey: uneditedFlakey,
+                //TODO: when new Flakey created, the React Route doesn't unmount Flakey. Instead calls this method! So, date and time need to be updated manually. Would be nice not to have totrack these.
+                //See https://github.com/ReactTraining/react-router/blob/800991cd2044293718fccd3763b9d91c2f811296/docs/guides/ComponentLifecycle.md
+                date: moment(uneditedFlakey.dateExpires).format('YYYY-MM-DD'),
+                time: moment(uneditedFlakey.dateExpires).format('HH:mm'),
+             });
         }
 
 
