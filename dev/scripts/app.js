@@ -496,13 +496,12 @@ class App extends React.Component {
             <StyleRoot>
                 <Router>
                     <div>
-                    {/*<Route path="/" render={props => <Header {...props} {...headerProps}
-                        {...this.header} />} />*/}
+                    <Route path="/" render={props => <Header {...props} {...headerProps}
+                        {...this.header} />} />
 
-                        <Route path="/" render={props => 
-                        <div>
-                            <Header {...props} {...headerProps}
-                                {...this.header} />
+
+                        <Route exact path="/" render={props => 
+                        
                             <div className="landing__section">
                                 Welcome!
                                 <br />
@@ -521,8 +520,8 @@ class App extends React.Component {
                                     <li>After the FLakey expires, the Flakey will indicate if your friend flaked.</li>
                                 </ol>
                             </div>
-                        </div>
-
+                        
+                        
                         } />
 
                     <Switch>
