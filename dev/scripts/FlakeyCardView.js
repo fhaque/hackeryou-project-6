@@ -66,9 +66,11 @@ class FlakeyCardView extends React.Component {
         const uid = this.props.user.uid;
         const flakeyId = this.state.flakey.id;
 
+        console.log("Clicked Commit to Flakey", uid, flakeyId);
+
         services.addFlakeyToUser(uid, flakeyId);
 
-        console.log("Clicked Commit to Flakey", uid, flakeyId);
+        
     }
 
     handleFlakeySubscription(flakeyObj) {

@@ -1,6 +1,6 @@
 import firebase from './firebase';
 
-// const dbRef = firebase.database().ref();
+const dbRef = firebase.database().ref();
 const dbUsersRef = firebase.database().ref('users/');
 const dbFlakeysRef = firebase.database().ref('flakeys/');
 
@@ -319,15 +319,35 @@ services.signalFlakeysExpireCheck = function() {
 // }
 
 services.addFlakeyToUser = function(uid, flakeyid) {
-    return dbUsersRef.child(uid).child('flakeyIds').update({[flakeyid]: true})
+    const userFlakeyIdEntry = { [flakeyid]: true};
+
+    console.log("services, flakey commit entry:", userFlakeyIdEntry);
+
+    dbFlakeysRef.child(flakeyid).child('members').update({[uid]: true})
     .then( () => {
-        return dbFlakeysRef.child(flakeyid).child('members').update({[uid]: true});
+        console.log("services, now saving to user flakeyIds");
+        // return dbUsersRef.child(uid).child('flakeyIds').update({ [flakeyid]: true} );
+        const update = {
+            [`users/${uid}/flakeyIds/${flakeyid}`]: true
+        };
+        return dbRef.update(update);
     })
     .then( () => true)
     .catch( err => {
-        console.log('Services: failed to add Flakey to User.');
+        console.log('Services: failed to add Flakey to User.', err);
         return err;
     });
+
+
+    // return dbUsersRef.child(uid).child('flakeyIds').update({ [flakeyid]: true} )
+    // .then( () => {
+    //     return dbFlakeysRef.child(flakeyid).child('members').update({[uid]: true});
+    // })
+    // .then( () => true)
+    // .catch( err => {
+    //     console.log('Services: failed to add Flakey to User.');
+    //     return err;
+    // });
 }
 
 //TODO: seperate out the user update from the flakey update.

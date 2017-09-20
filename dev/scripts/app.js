@@ -282,7 +282,7 @@ class App extends React.Component {
     handleUserSubscription(userObj) {
         const user = services.dbUserToUser(userObj);
 
-        console.log("From user Subscription",this.state.user.flakeyIds);
+        
 
         //unsubscribe to old flakeys
         this.state.user.flakeyIds.map( (flakeyId) => {
@@ -299,6 +299,8 @@ class App extends React.Component {
             flakeyIds.push(key);
         }
         user.flakeyIds = flakeyIds;
+
+        console.log("From user Subscription", user.flakeyIds);
 
         //subscribe to new flakeys
         user.flakeyIds.map( (flakeyId) => {

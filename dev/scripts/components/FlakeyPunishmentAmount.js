@@ -24,7 +24,7 @@ class FlakeyPunishmentAmount extends React.Component {
             { editMode ?
                     <label>
                         <span>Punishment amount:</span>
-                        <input type="number" name="amount" onChange={handleChange} value={Number(amount)} />
+                        <input type="number" name="amount" onChange={handleChange} value={amount} />
                     </label>
                 :
                     <div>
