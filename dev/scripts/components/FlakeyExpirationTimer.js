@@ -79,7 +79,9 @@ class FlakeyExpirationTimer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ dateExpires: nextProps.dateExpires });
+        this.setState({ 
+            dateExpires: nextProps.dateExpires
+         });
     }
 
     componentDidMount() {

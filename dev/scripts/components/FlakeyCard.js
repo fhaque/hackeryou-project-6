@@ -127,6 +127,10 @@ class FlakeyCard extends React.Component {
 
     }
 
+    componentWillUnmount() {
+        console.log('Flakey Card unmounted.');    
+    }
+
 
     componentDidMount() {
 
@@ -159,7 +163,7 @@ class FlakeyCard extends React.Component {
         this.setState({ uneditedFlakey });
 
         if(!this.state.editMode) {
-            this.setState({ flakey: this.state.uneditedFlakey });
+            this.setState({ flakey: uneditedFlakey });
         }
 
 
