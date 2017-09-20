@@ -65,12 +65,13 @@ class FlakeyExpirationTimer extends React.Component {
                 minutes: 0,
                 seconds: 0
             },
-            dateExpires: 0
+            dateExpires: 0,
+            timerExpired: false
         }
 
         this.intervalID = 0;
 
-        this.updateTimeRemaining = this.updateTimeRemaining.bind(this);
+        this.handleInterval = this.handleInterval.bind(this);
     }
 
     componentWillUnmount() {
@@ -84,11 +85,29 @@ class FlakeyExpirationTimer extends React.Component {
     componentDidMount() {
         const {dateExpires} = this.props;
 
-        this.intervalID = setInterval(this.updateTimeRemaining, 1000);
+        this.intervalID = setInterval(this.handleInterval, 1000);
     }
 
-    updateTimeRemaining() {
+    handleInterval() {
+        const nowPastExpiration = this.state.dateExpires <= Date.now();
+        
+        //update the time remaining for display
         this.setState({ remainingTime: this.calculateTimeRemaining(this.state.dateExpires) });
+
+        if (nowPastExpiration && !this.state.timerExpired) {
+            this.props.handleExpire();
+        }
+        
+        //check if timer expired
+        if ( nowPastExpiration ) {
+            this.setState({ timerExpired: true });
+        } else {
+            this.setState({ timerExpired: false });
+        }
+
+        
+
+        
     }
 
 

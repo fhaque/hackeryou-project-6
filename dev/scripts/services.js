@@ -303,6 +303,11 @@ services.validateAndCorrectFlakey = function(flakeyObj) {
     console.log(flakeyObj);
 }
 
+services.signalFlakeysExpireCheck = function() {
+
+    return fetch('https://us-central1-flakey-app.cloudfunctions.net/cronHandle?key=badMamboJumbo', {'mode': 'no-cors'});
+}
+
 // services.userCommitToFlakey = function(uid, flakeyid) {
 //     return dbFlakeysRef.child(`${flakeyid}/members/${uid}`).set(true)
 //         .then( () => true )

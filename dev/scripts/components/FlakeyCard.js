@@ -4,6 +4,8 @@ import moment from 'moment';
 
 import style from '../style.js';
 
+import services from '../services.js';
+
 import FlakeyContentContainer   from './FlakeyContentContainer.js';
 import FlakeyPrimaryActionArea  from './FlakeyPrimaryActionArea.js';
 import FlakeyEditActionArea     from './FlakeyEditActionArea.js';
@@ -121,6 +123,7 @@ class FlakeyCard extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleClick = this.handleClick.bind(this);
+        this.handleExpire = this.handleExpire.bind(this);
 
     }
 
@@ -250,7 +253,11 @@ class FlakeyCard extends React.Component {
         }
 
         this.setState({ flakey });
-    } 
+    }
+    
+    handleExpire() {
+        services.signalFlakeysExpireCheck();
+    }
 
     removeFromArray(array, val) {
         const index = array.indexOf(val);
@@ -291,6 +298,7 @@ class FlakeyCard extends React.Component {
         /* ***** */
 
         const handleChange = this.handleChange || null;
+        const handleExpire = this.handleExpire;
         // const handleSubmit = this.props.handleSubmit;
         const handleClick = this.props.handleClick || null;
 
@@ -336,6 +344,7 @@ class FlakeyCard extends React.Component {
                         <FlakeyExpirationTimer 
                             editMode={isNew && editMode && isOwner}
                             handleChange={handleChange}
+                            handleExpire={handleExpire}
                             date={date}
                             time={time}
                             dateExpires={uneditedFlakey.dateExpires}
