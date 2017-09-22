@@ -10,7 +10,7 @@ var nonEditStyles = {
         fontWeight: style.fontWeight.medium,
 
         '@media (max-width: 30em)': {
-            fontSize: '0.5em'
+            fontSize: '0.8em'
         }
     }
 }

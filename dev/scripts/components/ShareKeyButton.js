@@ -6,9 +6,11 @@ import style from '../style.js';
 
 var styles = {
     base: {
-        display: 'block',
+        // display: 'block',
         // width: '100%',
-        maxWidth: '40em',
+        // maxWidth: '40em',
+
+        padding: '6%',
 
         border: 'none',
         boxShadow: style.dropShadow.primary,
@@ -19,9 +21,9 @@ var styles = {
         fontWeight: style.fontWeight.heavy,
         textTransform: 'uppercase',
 
-        '@media (max-width: 30em)': {
-            fontSize: '0.4em'
-        }
+        // '@media (max-width: 30em)': {
+        //     fontSize: '0.4em'
+        // }
     },
 
     copied: {
@@ -64,7 +66,7 @@ class ShareKeyButton extends React.Component {
                 text={id}
                 onCopy={this.handleCopy}>
 
-                <button style={selectedStyles}>
+                <button className="primaryCardBtn" style={selectedStyles}>
                     {copied && 'Copied'}
                     {!copied && 'Share Key'}
                 </button>

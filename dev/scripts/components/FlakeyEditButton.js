@@ -5,9 +5,11 @@ import style from '../style.js';
 
 var styles = {
     base: {
-        display: 'block',
+        // display: 'block',
         // width: '100%',
-        maxWidth: '40em',
+        // maxWidth: '40em',
+        
+        // padding: '2% 3%',
 
         border: 'none',
         boxShadow: style.dropShadow.primary,
@@ -18,9 +20,9 @@ var styles = {
         fontWeight: style.fontWeight.heavy,
         textTransform: 'uppercase',
 
-        '@media (max-width: 30em)': {
-            fontSize: '0.4em'
-        }
+        // '@media (max-width: 30em)': {
+        //     fontSize: '0.4em'
+        // }
     },
 
     cancel: {
@@ -42,7 +44,7 @@ class FlakeyEditButton extends React.Component {
         selectedStyles.push(editMode ? styles.cancel : styles.normal);
 
         return (
-            <button name="edit" onClick={handleClick} style={selectedStyles}>
+            <button name="edit" onClick={handleClick} className="primaryCardBtn" style={selectedStyles}>
                 {editMode ? 'Cancel' : 'Edit'}
             </button>
         );

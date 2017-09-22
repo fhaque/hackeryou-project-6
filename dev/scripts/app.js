@@ -1,114 +1,29 @@
-import      React                       from 'react';
-import      ReactDOM                    from 'react-dom';
+import  React                       from 'react';
+import  ReactDOM                    from 'react-dom';
 import  { 
-            BrowserRouter as Router,
-            Switch, 
-            Route, 
-            Link 
-        }                               from 'react-router-dom';
-import      moment                      from 'moment';
+        BrowserRouter as Router,
+        Switch, 
+        Route, 
+        Link 
+        }                           from 'react-router-dom';
+import  { StyleRoot }               from 'radium';
+        
+import  moment                      from 'moment';
 
-import      firebase, 
-            { auth, provider }          from './firebase';
+import  firebase, 
+        { auth, provider }          from './firebase';
 
-import      services                    from './services';
+import  services                    from './services';
 
-import      Header                      from './components/Header';
-// import      FlakeyCard                  from './components/FlakeyCard';
-import      FlakeysView                 from './FlakeysView';
-import      FlakeyCardView              from './FlakeyCardView.js'
-// import      CreateFlakeyView            from './CreateFlakeyView';
-// import      EditFlakeyView              from './EditFlakeyView';
-import      {StyleRoot}                 from 'radium';
+import  Header                      from './components/Header';
+import  LandingView                 from './LandingView'
+import  FlakeysView                 from './FlakeysView';
+import  FlakeyCardView              from './FlakeyCardView'
 
 
 
 const dbUsersRef = firebase.database().ref('users/');
 const dbFlakeysRef = firebase.database().ref('flakeys/');
-// dbUsersRef.push({
-//     name: 'Bob',
-//     email: 'bob@gma.com',
-//     flakey_ids: {},
-//     uid: '123'
-// });
-
-// dbUsersRef.push({
-//     name: 'Sally',
-//     email: 'sally@gma.com',
-//     flakey_ids: {},
-//     uid: '1234'
-// });
-
-// dbUsersRef.push({
-//     name: 'Jake',
-//     email: 'jake@gma.com',
-//     flakey_ids: {},
-//     uid: '12345'
-// });
-
-// dbFlakeysRef.push({
-//     owner: '123',
-//     title: 'Better show',
-//     event: 'Concert',
-//     amount: 10.50,
-//     members: {'123': true},
-//     flakedMembers: {},
-//     id: '',
-//     dateExpires: 0,
-//     dateCreated: 0,
-//     expired: false,
-//     deleted: false,
-//     complete: false,
-//     description: 'This should be good.',
-// });
-
-// dbFlakeysRef.push({
-//     owner: '123',
-//     title: 'Salsa',
-//     event: 'Concert',
-//     amount: 10.50,
-//     members: {'1234': true},
-//     flakedMembers: {},
-//     id: '',
-//     dateExpires: 0,
-//     dateCreated: 0,
-//     expired: false,
-//     deleted: false,
-//     complete: false,
-//     description: 'Thisasda',
-// });
-
-// dbFlakeysRef.push({
-//     owner: '123',
-//     title: 'Latin',
-//     event: 'Concert',
-//     amount: 10.50,
-//     members: {'1234': true,'12345': true},
-//     flakedMembers: {},
-//     id: '',
-//     dateExpires: 0,
-//     dateCreated: 0,
-//     expired: false,
-//     deleted: false,
-//     complete: false,
-//     description: 'asdadsThis should be good.',
-// });
-
-// dbFlakeysRef.push({
-//     owner: '12345',
-//     title: 'Chicken',
-//     event: 'Concert',
-//     amount: 10.50,
-//     members: {'1234':true,'123':true},
-//     flakedMembers: {},
-//     key: '',
-//     expired: false,
-//     deleted: false,
-//     complete: false,
-//     description: 'zxcvxzcvThis should be good.',
-// });
-
-
 
 class App extends React.Component {
     constructor() {
@@ -500,29 +415,7 @@ class App extends React.Component {
                         {...this.header} />} />
 
 
-                        <Route exact path="/" render={props => 
-                        
-                            <div className="landing__section">
-                                Welcome!
-                                <br />
-                                Don't you hate when people flake out? This is an app to combat Flakers! Create a "Flakey" or commitment amongst your friends.
-
-                                Full featured app using real life financial commitment coming soon!
-
-                                <ol className="landing__list">
-                                    <li>Login.</li>
-                                    <li>Create a new "Flakey".</li>
-                                    <li>Give the Flakey a Name, Expiration or Event date and time, and a punishment amount.</li>
-                                    <li>Click the "Share Key" to copy the key to share with friends.</li>
-                                    <li>Have friends Login and enter the key in the Flakey Search bar.</li>
-                                    <li>Have friend click the "Commit to FLakey" button to commit!</li>
-                                    <li>If you are the creator of the Flakey, you can "Edit" the Flakey and check-off who Flaked.</li>
-                                    <li>After the FLakey expires, the Flakey will indicate if your friend flaked.</li>
-                                </ol>
-                            </div>
-                        
-                        
-                        } />
+                        <Route exact path="/" component={LandingView} />
 
                     <Switch>
                         <Route exact path="/flakeys" render={props => <FlakeysView {...props} {...flakeysViewProps} />} />

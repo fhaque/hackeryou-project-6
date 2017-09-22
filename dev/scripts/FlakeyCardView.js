@@ -9,7 +9,7 @@ import FlakeyCard           from './components/FlakeyCard';
 
 var styles = {
     base: {
-        padding: '10%',
+        padding: '10% 0%',
     }
 }
 

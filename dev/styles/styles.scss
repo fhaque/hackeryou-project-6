@@ -17,6 +17,52 @@ $primaryColor: #0947b3;
 $secondaryColor: #ff6047;
 $thirdColor: white;
 
+//*********** Mixins ***********//
+
+@mixin respond-to($breakpoint) {
+    @if $breakpoint == "small" {
+      @media (max-width: 480px) {
+        @content;
+      }
+    }
+    
+    @else if $breakpoint == "small-medium" {
+        @media (max-width: 648px) {
+            @content;
+        }
+    }
+  
+    @else if $breakpoint == "medium" {
+      @media (max-width: 768px) {
+        @content;
+      }
+    }
+
+    @else if $breakpoint == "medium-large" {
+        @media (max-width: 800px) {
+          @content;
+        }
+      }
+  
+    @else if $breakpoint == "large" {
+      @media (max-width: 940px) {
+        @content;
+      }
+    }
+  
+    // @else if $breakpoint == "xlarge" {
+    //   @media (min-width: 1500px) {
+    //     @content;
+    //   }
+    // }
+  
+    @else {
+      @media ($breakpoint) {
+        @content;
+      }
+    }
+  }
+
 //*********** Global ***********//
 html, body {
     font-size: 10px;
@@ -35,73 +81,189 @@ h1,h2,h3,h4,h5,h6,p {
     padding: 0;
 }
 
-button, input[type="submit"] {
-    padding: 10px;
-
-    border: none;
-    border-radius: none;
-
-    font-size: 1.2rem;
-    
-    background-color: $thirdColor;
-    box-shadow: 0px 0px 3px 2px rgba(0,0,0,0.2);
-
+button {
     &:hover {
-        transform: scale(0.99, 0.99);
-        box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.3);
+        transform: scale(0.95, 0.95);
     }
 }
 
+.primaryCardBtn {
+        display: block;
+        
+        
+
+        min-width: 120px;
+        white-space: nowrap;
+
+        padding: 2% 3%;
+        margin-left: 10px;
+}
+
+// button, input[type="submit"] {
+//     padding: 10px;
+
+//     border: none;
+//     border-radius: none;
+
+//     font-size: 1.2rem;
+    
+//     background-color: $thirdColor;
+//     box-shadow: 0px 0px 3px 2px rgba(0,0,0,0.2);
+
+//     &:hover {
+//         transform: scale(0.99, 0.99);
+//         box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.3);
+//     }
+// }
+
 //*********** Header ***********//
-.Header {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+// .Header {
+//     display: flex;
+//     justify-content: space-around;
+//     align-items: center;
 
-    padding: 20px 0px;
+//     padding: 20px 0px;
 
-    color: $thirdColor;
-    background-color: $primaryColor;
+//     color: $thirdColor;
+//     background-color: $primaryColor;
 
-    box-shadow: 0px 0px 3px 3px rgba(0,0,0,0.3);
+//     box-shadow: 0px 0px 3px 3px rgba(0,0,0,0.3);
+// }
+
+// .Header__title {
+//     font-size: 3rem;
+// }
+
+// .Header__loggedInUserUI {
+//     display: flex;
+//     justify-content: space-between;
+// }
+
+
+
+.Header button {
+    font-size: 1.5rem;
+    padding: 1% 2%;
+    @include respond-to("large") {
+        font-size: 1.3rem;
+    }
 }
 
-.Header__title {
-    font-size: 3rem;
-}
-
-.Header__loggedInUserUI {
+.Header__btnContainer {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
+    align-items: center;
+    
+    width: 40%;
+
+    @include respond-to("small-medium") {
+        width: 100%;
+    }
+
 }
 
 .Header__btnContainer button {
-    margin: 0px 5px;
+    display: block;
+    padding: 1rem 2rem;
+    margin: 5px 0;
+    width: 45%;
+    min-width: 200px;
+
+    text-align: center;
+
+    @include respond-to("large") {
+        min-width: 150px;
+        
+    }
+
+    @include respond-to("small-medium") {
+        width: 100%;
+    }
+
+    
 }
 
+.Header__logInfoContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
+    @include respond-to("medium-large") {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.Header__logInfoContainer button {
+    padding: 1rem 2rem;
+
+    @include respond-to("medium-large") {
+        padding: 0.5rem 2rem;
+    }
+}
+
+.Header__uiActionsContainer {
+    display: flex;
+    justify-content: space-between;
+
+    @include respond-to("small-medium") {
+        flex-direction: column;
+        align-items: center;
+
+        width: 50%;
+    }
+
+    @include respond-to("small-medium") {
+        width: 45%;
+    }
+}
 
 //********* AddFlakeyKeyBar *********//
 .AddFlakeyKeyBar {
     display: flex;
     justify-content: center;
-    align-content: center;
+    align-items: center;
 
-    overflow: hidden;
+    width: 55%;
+
+    // overflow: hidden;
 
     box-shadow: 0px 0px 3px 2px rgba(0,0,0,0.2);
+
+    @include respond-to("small-medium") {
+        width: 100%;
+        margin-bottom: 15px;
+    }
 }
 
 .AddFlakeyKeyBar input[type="text"] {
-    padding: 10px;
+    font-size: 1.5rem;
+    padding: 1rem;
+    min-height: 42px;
+
+    width: 60%;
+
+    @include respond-to("small-medium") {
+        width: 100%;
+    }
 }
+
 
 .AddFlakeyKeyBar input[type="submit"] {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    font-size: 1.5rem;
+    padding: 1rem 2rem;
+    min-height: 42px;
 
-    box-shadow: none;
+    @include respond-to("medium-large") {
+        font-size: 1.1rem;
+        padding: 0.7rem;
+    }
 }
+
+
 
 //********* LoggedInUserIndicator ****//
 .LoggedInUserIndicator {
@@ -109,12 +271,31 @@ button, input[type="submit"] {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+
+    margin-right: 10px;
+
+    text-align: center;
+
+    @include respond-to("medium-large") {
+        margin-right: 0;
+    }
+
+    
 }
 
 .LoggedInUserIndicator__photo {
+    display: block;
     width: 4rem;
     margin-bottom: 10px;
 
+    border-radius: 50%;
+
+}
+
+.LoggedInUserIndicator__greeting {
+    @include respond-to("medium-large") {
+        display: none;
+    }
 }
 
 //******* FlakeyCardViewHeader ******//
@@ -125,10 +306,10 @@ button, input[type="submit"] {
     padding: 10px 10px;
 }
 
-.FlakeyCardViewHeader button {
-    padding-left: 20px;
-    padding-right: 20px;
-}
+// .FlakeyCardViewHeader button {
+//     padding-left: 20px;
+//     padding-right: 20px;
+// }
 
 //*********** FlakeyCard ***********//
 // .FlakeyCard {
@@ -169,10 +350,10 @@ span.FlakeyCard__inputLabel {
     font-weight: 700;
 }
 
-.FlakeyCard button {
-    color: $thirdColor;
-    background-color: $primaryColor;
-}
+// .FlakeyCard button {
+//     color: $thirdColor;
+//     background-color: $primaryColor;
+// }
 
 .FlakeyCard input[type="text"],
 .FlakeyCard input[type="time"],

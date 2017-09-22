@@ -56,6 +56,22 @@ style.fontSize = {
 
 style.el = {};
 
+style.el.button = {
+    base: {
+        color: style.colors.accentText,
+        backgroundColor: style.colors.accent,
+
+        // fontSize: '1.5rem',
+        fontWeight: style.fontWeight.heavy,
+        textTransform: 'uppercase',
+        whiteSpace: 'nowrap', 
+        
+        border: 'none',
+
+        boxShadow: style.dropShadow.primary,
+    },
+}
+
 style.el.labelStyles = {
     base: {
         marginBottom: style.fontSize.cardEntryLabel,
@@ -63,6 +79,7 @@ style.el.labelStyles = {
         fontSize: style.fontSize.cardEntryLabel,
         fontFamily: style.fontFamily.primary,
         fontWeight: style.fontWeight.medium,
+        textTransform: 'uppercase',
         
     },
 }

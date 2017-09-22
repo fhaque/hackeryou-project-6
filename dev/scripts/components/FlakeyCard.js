@@ -56,7 +56,10 @@ var buttonStyles = {
     base: {
         // width: '32%',
         maxWidth: '40em',
+        minWidth: '80px',
         // margin: '0 2%',
+        marginLeft: '10px',
+        padding: '2% 2%',
 
         border: 'none',
         backgroundColor: style.colors.accent,

@@ -22,6 +22,7 @@ var memberImageStyles = {
         position: 'relative',
         right: 0,
         width: '20%',
+        minWidth: '50px',
     }
 }
 

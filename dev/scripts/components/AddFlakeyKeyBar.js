@@ -1,4 +1,21 @@
 import React from 'react';
+import Radium from 'radium';
+
+import style from '../style.js';
+
+var styles = {
+    base: {
+
+    }
+};
+
+var buttonStyles = style.el.button;
+
+var inputStyles = {
+    base: {
+        fontFamily: style.fontFamily.primary,
+    }
+}
 
 class AddFlakeyKeyBar extends React.Component {
     constructor() {
@@ -26,12 +43,13 @@ class AddFlakeyKeyBar extends React.Component {
     render() {
 
         return (
-            <form className="AddFlakeyKeyBar" onSubmit={(e) => this.props.handleSubmit(e, this.state.flakeyId)}>
-                <input type="text" name="flakeyId" value={this.state.flakeyId} onChange={this.handleChange} placeholder="Enter shared Flakey key." />
-                <input type="submit" value="View Flakey" />
+            <form className="AddFlakeyKeyBar" style={styles.base} onSubmit={(e) => this.props.handleSubmit(e, this.state.flakeyId)}>
+                <input style={inputStyles.base} type="text" name="flakeyId" value={this.state.flakeyId} onChange={this.handleChange} placeholder="Enter shared Flakey key." />
+                <input type="submit" value="View Flakey" style={buttonStyles.base} />
             </form>
         );
     }
 }
 
+AddFlakeyKeyBar = Radium(AddFlakeyKeyBar);
 export default AddFlakeyKeyBar;
