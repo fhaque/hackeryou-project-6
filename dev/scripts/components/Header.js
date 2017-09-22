@@ -8,17 +8,22 @@ import AddFlakeyKeyBar from './AddFlakeyKeyBar';
 
 var styles = {
     base: {
-        display: 'flex',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-
-        padding: '20px 0px',
-
         color: style.colors.heading,
         fontFamily: style.fontFamily.secondary,
         backgroundColor: style.colors.dark,
     
         boxShadow: style.dropShadow.primary,
+    }
+}
+
+var wrapperStyles = {
+    base: {
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+
+        padding: '20px 0px',    
+
     }
 }
 
@@ -80,6 +85,7 @@ class Header extends React.Component {
 
         return (
             <header className="Header" style={styles.base}>
+            <div className="wrapper" style={wrapperStyles.base} >
                 <h1 style={titleStyles.base}>{title}</h1>
                 {userAuth &&
                 <div  className="Header__uiActionsContainer" style={loggedInUserUIStyles.base}>
@@ -108,7 +114,7 @@ class Header extends React.Component {
                     }
 
                 </div>
-
+            </div>
             </header>
         );
 

@@ -10,6 +10,8 @@ import FlakeyCard           from './components/FlakeyCard';
 var styles = {
     base: {
         padding: '10% 0%',
+        width: '100%',
+        maxWidth: '1170px',
     }
 }
 
@@ -17,6 +19,7 @@ var flakeyCardStyle = {
     base: {
         width: '100%',
         margin: '0 auto',
+
     }
 }
 

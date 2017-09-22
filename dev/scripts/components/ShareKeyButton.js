@@ -10,7 +10,7 @@ var styles = {
         // width: '100%',
         // maxWidth: '40em',
 
-        padding: '6%',
+        // padding: '6%',
 
         border: 'none',
         boxShadow: style.dropShadow.primary,

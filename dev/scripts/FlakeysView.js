@@ -13,6 +13,9 @@ var styles = {
         alignItems: 'center',
         flexWrap: 'wrap',
 
+        width: '100%',
+        maxWidth: '1170px',
+
         margin: '0 auto',
     },
 }
