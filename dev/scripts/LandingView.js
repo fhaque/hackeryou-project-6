@@ -2,7 +2,7 @@ import React from 'react';
 
 const LandingView = function(props) {
     return (
-        <div className="landing__section">
+        <div className="landing__section wrapper">
             Welcome!
             <br />
             Don't you hate when people flake out? This is an app to combat Flakers! Create a "Flakey" or commitment amongst your friends.
